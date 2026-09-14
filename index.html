@@ -12,23 +12,31 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,sans-serif;c
 .screen{position:fixed;inset:0;display:none;flex-direction:column;}
 .screen.on{display:flex;}
 
-/* ========= LOGIN ========= */
-#login{align-items:center;justify-content:center;padding:24px;
+/* ========= AUTH SCREENS ========= */
+#signin, #signup{align-items:center;justify-content:center;padding:24px;
   background:radial-gradient(circle at 30% 20%,rgba(255,45,120,0.25),transparent 55%),
              radial-gradient(circle at 70% 80%,rgba(139,92,246,0.3),transparent 55%),
              #0a0a0f;}
 .brand{font-size:36px;font-weight:900;letter-spacing:-1.5px;text-align:center;margin-bottom:8px;}
 .brand span{background:linear-gradient(135deg,#ff2d78,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.brand-sub{font-size:13px;color:rgba(255,255,255,0.5);text-align:center;margin-bottom:32px;font-weight:500;}
-.auth-card{width:100%;max-width:380px;background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:14px;}
+.brand-sub{font-size:13px;color:rgba(255,255,255,0.5);text-align:center;margin-bottom:28px;font-weight:500;}
+.auth-card{width:100%;max-width:380px;background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:13px;}
+.card-title{font-size:18px;font-weight:800;text-align:center;letter-spacing:-0.3px;margin-bottom:4px;}
 .field{display:flex;flex-direction:column;gap:6px;}
 .field label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);}
 .field input{padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;font-family:inherit;font-size:15px;outline:none;transition:border-color 0.2s;}
 .field input:focus{border-color:#ff2d78;}
+.field input.err{border-color:#ef4444;}
+.err-msg{font-size:11px;color:#ef4444;font-weight:600;margin-top:2px;display:none;}
+.err-msg.on{display:block;}
 .btn-primary{padding:15px;border-radius:100px;background:linear-gradient(135deg,#ff2d78,#8b5cf6);border:none;color:#fff;font-size:15px;font-weight:800;letter-spacing:0.3px;cursor:pointer;box-shadow:0 8px 28px rgba(255,45,120,0.4);transition:transform 0.15s;}
 .btn-primary:active{transform:scale(0.97);}
-.toggle-auth{text-align:center;font-size:13px;color:rgba(255,255,255,0.55);}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
+.toggle-auth{text-align:center;font-size:13px;color:rgba(255,255,255,0.55);margin-top:2px;}
 .toggle-auth b{color:#ff2d78;cursor:pointer;font-weight:700;}
+.check-row{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.check-row input{margin-top:2px;accent-color:#ff2d78;}
+.check-row a{color:#ff2d78;text-decoration:none;font-weight:600;}
 
 /* ========= ADMIN ========= */
 #admin{padding:20px;overflow-y:auto;background:#0a0a0f;}
@@ -96,21 +104,58 @@ select{padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.05);bo
 </head>
 <body>
 
-<!-- ================= LOGIN ================= -->
-<div class="screen on" id="login">
+<!-- ================= SIGN IN ================= -->
+<div class="screen on" id="signin">
   <div class="brand">Live<span>Link</span></div>
   <div class="brand-sub">Go live. Get seen. Get connected.</div>
   <div class="auth-card">
+    <div class="card-title">Sign In</div>
     <div class="field">
       <label>Email</label>
-      <input id="emailInput" type="email" placeholder="Enter your email">
+      <input id="loginEmail" type="email" placeholder="Enter your email" autocomplete="email">
     </div>
     <div class="field">
       <label>Password</label>
-      <input id="passInput" type="password" placeholder="Enter your password">
+      <input id="loginPass" type="password" placeholder="Enter your password" autocomplete="current-password">
     </div>
     <button class="btn-primary" id="loginBtn">Sign In</button>
-    <div class="toggle-auth">No account? <b id="signupToggle">Create one</b></div>
+    <div class="toggle-auth">Don't have an account? <b id="toSignup">Sign Up</b></div>
+  </div>
+</div>
+
+<!-- ================= SIGN UP ================= -->
+<div class="screen" id="signup">
+  <div class="brand">Live<span>Link</span></div>
+  <div class="brand-sub">Create your account to get started</div>
+  <div class="auth-card">
+    <div class="card-title">Sign Up</div>
+    <div class="field">
+      <label>Full Name</label>
+      <input id="suName" type="text" placeholder="Enter your full name" autocomplete="name">
+      <div class="err-msg" id="errName">Please enter your full name</div>
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input id="suEmail" type="email" placeholder="Enter your email" autocomplete="email">
+      <div class="err-msg" id="errEmail">Please enter a valid email address</div>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="suPass" type="password" placeholder="Create a password (min 6 chars)" autocomplete="new-password">
+      <div class="err-msg" id="errPass">Password must be at least 6 characters</div>
+    </div>
+    <div class="field">
+      <label>Confirm Password</label>
+      <input id="suPass2" type="password" placeholder="Re-enter your password" autocomplete="new-password">
+      <div class="err-msg" id="errPass2">Passwords do not match</div>
+    </div>
+    <label class="check-row">
+      <input type="checkbox" id="suTerms">
+      <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+    </label>
+    <div class="err-msg" id="errTerms">You must accept the terms to continue</div>
+    <button class="btn-primary" id="signupBtn">Create Account</button>
+    <div class="toggle-auth">Already have an account? <b id="toSignin">Sign In</b></div>
   </div>
 </div>
 
@@ -191,21 +236,73 @@ select{padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.05);bo
 <script>
 const $ = id => document.getElementById(id);
 
-/* ---------- SCREEN SWITCHER ---------- */
 function show(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
   $(id).classList.add('on');
 }
 
-/* ---------- LOGIN ---------- */
+/* ---------- AUTH NAVIGATION ---------- */
+$('toSignup').addEventListener('click', () => show('signup'));
+$('toSignin').addEventListener('click', () => show('signin'));
+
+/* ---------- SIGN IN ---------- */
 $('loginBtn').addEventListener('click', () => {
-  if(!$('emailInput').value || !$('passInput').value) return;
+  const email = $('loginEmail').value.trim();
+  const pass = $('loginPass').value;
+  if(!email || !pass) return;
   show('admin');
 });
-$('signupToggle').addEventListener('click', () => {
-  $('loginBtn').textContent = $('loginBtn').textContent === 'Sign In' ? 'Create Account' : 'Sign In';
+
+/* ---------- SIGN UP ---------- */
+function setErr(inputId, errId, on){
+  $(inputId).classList.toggle('err', on);
+  $(errId).classList.toggle('on', on);
+}
+function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+$('signupBtn').addEventListener('click', () => {
+  const name = $('suName').value.trim();
+  const email = $('suEmail').value.trim();
+  const pass = $('suPass').value;
+  const pass2 = $('suPass2').value;
+  const terms = $('suTerms').checked;
+
+  let ok = true;
+  const eName = !name;               setErr('suName','errName', eName); ok = ok && !eName;
+  const eEmail = !validEmail(email); setErr('suEmail','errEmail', eEmail); ok = ok && !eEmail;
+  const ePass = pass.length < 6;     setErr('suPass','errPass', ePass); ok = ok && !ePass;
+  const ePass2 = pass !== pass2;     setErr('suPass2','errPass2', ePass2); ok = ok && !ePass2;
+  const eTerms = !terms;             $('errTerms').classList.toggle('on', eTerms); ok = ok && !eTerms;
+
+  if(!ok) return;
+
+  $('signupBtn').textContent = 'Creating account...';
+  $('signupBtn').disabled = true;
+
+  setTimeout(() => {
+    $('signupBtn').textContent = 'Create Account';
+    $('signupBtn').disabled = false;
+    $('suName').value = '';
+    $('suEmail').value = '';
+    $('suPass').value = '';
+    $('suPass2').value = '';
+    $('suTerms').checked = false;
+    show('admin');
+  }, 900);
 });
-$('logoutBtn').addEventListener('click', () => { stopLive(); show('login'); });
+
+/* clear errors when typing */
+['suName','suEmail','suPass','suPass2'].forEach(id => {
+  $(id).addEventListener('input', () => {
+    const map = {suName:'errName', suEmail:'errEmail', suPass:'errPass', suPass2:'errPass2'};
+    $(id).classList.remove('err');
+    $(map[id]).classList.remove('on');
+  });
+});
+$('suTerms').addEventListener('change', () => $('errTerms').classList.remove('on'));
+
+/* ---------- LOGOUT ---------- */
+$('logoutBtn').addEventListener('click', () => { stopLive(); show('signin'); });
 
 /* ---------- ADMIN: PHOTO PREVIEW ---------- */
 let photoDataURL = null;
@@ -245,7 +342,7 @@ $('goLiveBtn').addEventListener('click', () => {
   }, 80);
 });
 
-/* ---------- MOUTH POSITION (drag after long-press) ---------- */
+/* ---------- MOUTH ---------- */
 let mouthX = 50, mouthY = 66, mouthW = 42, mouthH = 19;
 function positionMouth(){
   const stage = $('stage'); const w = stage.clientWidth, h = stage.clientHeight;
@@ -282,7 +379,7 @@ window.addEventListener('resize', positionMouth);
   stage.addEventListener('pointercancel', () => { clearTimeout(timer); dragging=false; });
 })();
 
-/* ---------- SPEAK SCRIPT ---------- */
+/* ---------- SPEAK ---------- */
 function speakScript(lines){
   const mouth = $('mouth'), cap = $('caption'); let i = 0;
   function line(){
