@@ -68,17 +68,13 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,sans-serif;c
 .check-row input{margin-top:2px;accent-color:#ff2d78;}
 .check-row a{color:#ff2d78;text-decoration:none;font-weight:600;}
 
-.footer-admin{
-  text-align:center;margin-top:24px;font-size:12px;
-  color:rgba(255,255,255,0.3);
-}
+.footer-admin{text-align:center;margin-top:24px;font-size:12px;color:rgba(255,255,255,0.3);}
 .footer-admin a{color:rgba(255,255,255,0.5);text-decoration:none;font-weight:600;}
 .footer-admin a:hover{color:#ff2d78;}
 </style>
 </head>
 <body>
 
-<!-- ================= SIGN IN ================= -->
 <div class="screen on" id="signin">
   <div class="brand">Live<span>Link</span></div>
   <div class="brand-sub">Go live. Get seen. Get connected.</div>
@@ -99,7 +95,6 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,sans-serif;c
   <div class="footer-admin">Are you an admin? <a href="admin-login.html">Admin login</a></div>
 </div>
 
-<!-- ================= SIGN UP ================= -->
 <div class="screen" id="signup">
   <div class="brand">Live<span>Link</span></div>
   <div class="brand-sub">Create your account to get started</div>
@@ -139,15 +134,13 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,sans-serif;c
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* =========================================================
-   SUPABASE CONFIG — anon public key (safe for frontend)
-   ========================================================= */
+/* ---------- Config ---------- */
 const SUPABASE_URL  = 'https://isoautwpyzaquawyzbbv.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb2F1dHdweXphcXVhd3l6YmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NjYyMzUsImV4cCI6MjEwNTA0MjIzNX0.GpdO1B6aR_oOfwmnDbs3kBLvUVkRsZhJMGhcIXJx7RQ';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+/* Use `sb` — never `supabase` — because the library declares window.supabase */
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-/* ---------- Helpers ---------- */
 const $ = id => document.getElementById(id);
 function show(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
@@ -164,17 +157,13 @@ function clearErr(errId){ $(errId).classList.remove('on'); }
 $('toSignup').addEventListener('click', () => { clearErr('loginErr'); show('signup'); });
 $('toSignin').addEventListener('click', () => { clearErr('signupErr'); $('signupInfo').classList.remove('on'); show('signin'); });
 
-/* =========================================================
-   SESSION CHECK — if already logged in, jump to live session
-   ========================================================= */
+/* ---------- Session check ---------- */
 (async () => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await sb.auth.getSession();
   if(session){ window.location.href = 'live-session.html'; }
 })();
 
-/* =========================================================
-   SIGN IN
-   ========================================================= */
+/* ---------- Sign In ---------- */
 $('loginBtn').addEventListener('click', async () => {
   const email = $('loginEmail').value.trim();
   const pass  = $('loginPass').value;
@@ -188,7 +177,7 @@ $('loginBtn').addEventListener('click', async () => {
   const btn = $('loginBtn');
   btn.disabled = true; btn.textContent = 'Signing in...';
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
 
   btn.disabled = false; btn.textContent = 'Sign In';
 
@@ -200,9 +189,7 @@ $('loginBtn').addEventListener('click', async () => {
   window.location.href = 'live-session.html';
 });
 
-/* =========================================================
-   SIGN UP
-   ========================================================= */
+/* ---------- Sign Up ---------- */
 $('signupBtn').addEventListener('click', async () => {
   const name  = $('suName').value.trim();
   const email = $('suEmail').value.trim();
@@ -225,7 +212,7 @@ $('signupBtn').addEventListener('click', async () => {
   const btn = $('signupBtn');
   btn.disabled = true; btn.textContent = 'Creating account...';
 
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await sb.auth.signUp({
     email, password: pass,
     options: { data: { full_name: name } }
   });
@@ -249,7 +236,7 @@ $('signupBtn').addEventListener('click', async () => {
   }
 });
 
-/* Clear errors when typing */
+/* ---------- Clear errors on input ---------- */
 ['suName','suEmail','suPass','suPass2'].forEach(id => {
   $(id).addEventListener('input', () => {
     const map = {suName:'errName', suEmail:'errEmail', suPass:'errPass', suPass2:'errPass2'};
