@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>Admin Panel — LiveLink</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100%;background:#0a0a0f;font-family:'Inter',system-ui,sans-serif;color:#fff;}
+body{padding-bottom:40px;}
+
+/* ========= HEADER ========= */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;
+  padding-top:max(16px,env(safe-area-inset-top));
+  background:rgba(10,10,15,0.85);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.brand{font-size:20px;font-weight:900;letter-spacing:-0.6px;}
+.brand span{background:linear-gradient(135deg,#ff2d78,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.brand-badge{
+  display:inline-block;margin-left:8px;
+  background:linear-gradient(135deg,#ff2d78,#8b5cf6);
+  font-size:9px;font-weight:900;letter-spacing:1px;
+  padding:3px 8px;border-radius:100px;vertical-align:middle;
+}
+.topbar-right{display:flex;gap:8px;align-items:center;}
+.icon-btn{
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform 0.15s,background 0.15s;
+}
+.icon-btn:hover{background:rgba(255,255,255,0.12);}
+.icon-btn:active{transform:scale(0.92);}
+.logout-btn{
+  padding:9px 16px;border-radius:100px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;font-size:12px;font-weight:600;cursor:pointer;
+}
+.logout-btn:hover{background:rgba(255,45,120,0.15);border-color:rgba(255,45,120,0.4);}
+
+/* ========= CONTAINER ========= */
+.wrap{max-width:920px;margin:0 auto;padding:24px 20px;}
+
+/* ========= STATS ========= */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.stat{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:16px;padding:16px;
+}
+.stat .k{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.45);}
+.stat .v{font-size:24px;font-weight:900;letter-spacing:-0.5px;margin-top:6px;}
+.stat .v.live{color:#22c55e;}
+
+/* ========= SECTION HEAD ========= */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;margin-top:8px;}
+.section-head h2{font-size:16px;font-weight:800;letter-spacing:-0.3px;}
+.section-head .count{font-size:12px;color:rgba(255,255,255,0.4);font-weight:600;}
+
+/* ========= BUTTONS ========= */
+.btn{
+  padding:11px 20px;border-radius:100px;
+  font-size:13px;font-weight:800;letter-spacing:0.3px;
+  border:none;cursor:pointer;font-family:inherit;
+  transition:transform 0.15s;
+}
+.btn:active{transform:scale(0.97);}
+.btn-primary{
+  background:linear-gradient(135deg,#ff2d78,#8b5cf6);
+  color:#fff;box-shadow:0 6px 20px rgba(255,45,120,0.35);
+}
+.btn-ghost{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;
+}
+.btn-danger{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
+.btn-success{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 6px 20px rgba(34,197,94,0.3);}
+
+/* ========= MEMBER CARD ========= */
+.member{
+  display:flex;gap:14px;padding:14px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:20px;margin-bottom:12px;
+  transition:border-color 0.2s;
+}
+.member.live{
+  border-color:rgba(34,197,94,0.5);
+  box-shadow:0 0 30px rgba(34,197,94,0.15);
+}
+.member-img{
+  width:72px;height:72px;border-radius:16px;
+  object-fit:cover;background:#1a0a2e;flex:0 0 72px;
+}
+.member-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.member-name{font-size:16px;font-weight:800;letter-spacing:-0.3px;display:flex;align-items:center;gap:6px;}
+.live-dot{
+  display:inline-flex;align-items:center;gap:4px;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  font-size:9px;font-weight:900;letter-spacing:0.5px;
+  padding:2px 7px;border-radius:100px;
+}
+.live-dot::before{content:"";width:5px;height:5px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.member-meta{font-size:12px;color:rgba(255,255,255,0.5);font-weight:500;}
+.member-pitch{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px;line-height:1.4;}
+.member-actions{display:flex;flex-direction:column;gap:6px;flex:0 0 auto;justify-content:center;}
+.member-actions .btn{padding:8px 14px;font-size:11px;}
+
+/* ========= EMPTY ========= */
+.empty{
+  text-align:center;padding:48px 20px;
+  background:rgba(255,255,255,0.02);
+  border:1px dashed rgba(255,255,255,0.1);
+  border-radius:20px;
+}
+.empty-icon{font-size:42px;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:800;margin-bottom:6px;}
+.empty-sub{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:18px;}
+
+/* ========= MODAL ========= */
+.modal{
+  position:fixed;inset:0;z-index:200;
+  display:none;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.modal.on{display:flex;}
+.sheet{
+  width:100%;max-width:520px;max-height:92vh;
+  background:#12121a;
+  border-top-left-radius:28px;border-top-right-radius:28px;
+  padding:24px 22px;padding-bottom:max(24px,env(safe-area-inset-bottom));
+  overflow-y:auto;
+  animation:slideUp 0.25s ease;
+}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.sheet-head h3{font-size:18px;font-weight:900;letter-spacing:-0.3px;}
+.sheet-close{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.field label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);}
+.field input,.field textarea{
+  width:100%;padding:13px 15px;border-radius:14px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;font-family:inherit;font-size:14px;
+  outline:none;transition:border-color 0.2s;
+}
+.field input:focus,.field textarea:focus{border-color:#ff2d78;}
+.field textarea{min-height:110px;resize:vertical;font-family:'SF Mono',monospace;font-size:13px;line-height:1.6;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+.file-drop{
+  border:2px dashed rgba(255,255,255,0.15);
+  border-radius:16px;padding:20px;
+  text-align:center;cursor:pointer;
+  font-size:13px;color:rgba(255,255,255,0.55);
+  transition:border-color 0.2s;
+}
+.file-drop:hover{border-color:#ff2d78;}
+.file-drop input{display:none;}
+.thumb{width:100%;max-height:200px;object-fit:contain;border-radius:14px;background:#000;margin-top:10px;display:none;}
+.thumb.on{display:block;}
+
+.sheet-actions{display:flex;gap:10px;margin-top:20px;}
+.sheet-actions .btn{flex:1;padding:14px;}
+
+/* ========= TOAST ========= */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:#1a1a24;border:1px solid rgba(255,255,255,0.1);
+  padding:12px 20px;border-radius:100px;
+  font-size:13px;font-weight:600;
+  z-index:300;opacity:0;transition:all 0.3s;
+}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1;}
+.toast.err{border-color:rgba(239,68,68,0.4);color:#f87171;}
+.toast.ok{border-color:rgba(34,197,94,0.4);color:#4ade80;}
+
+/* ========= LOADING ========= */
+.loading{text-align:center;padding:40px;color:rgba(255,255,255,0.4);font-size:13px;}
+</style>
+</head>
+<body>
+
+<!-- ========= TOP BAR ========= -->
+<div class="topbar">
+  <div class="brand">Live<span>Link</span><span class="brand-badge">ADMIN</span></div>
+  <div class="topbar-right">
+    <button class="icon-btn" id="previewBtn" title="Preview live">👁</button>
+    <button class="logout-btn" id="logoutBtn">Log out</button>
+  </div>
+</div>
+
+<!-- ========= MAIN ========= -->
+<div class="wrap">
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="k">Members</div><div class="v" id="statMembers">0</div></div>
+    <div class="stat"><div class="k">Live Now</div><div class="v live" id="statLive">—</div></div>
+    <div class="stat"><div class="k">Admin</div><div class="v" style="font-size:14px;padding-top:6px;" id="statAdmin">—</div></div>
+  </div>
+
+  <!-- HEAD -->
+  <div class="section-head">
+    <h2>Members</h2>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span class="count" id="memberCount">0 total</span>
+      <button class="btn btn-primary" id="addBtn">+ Add member</button>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div id="memberList">
+    <div class="loading">Loading members...</div>
+  </div>
+
+</div>
+
+<!-- ========= MEMBER FORM MODAL ========= -->
+<div class="modal" id="memberModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h3 id="modalTitle">Add member</h3>
+      <button class="sheet-close" id="modalClose">✕</button>
+    </div>
+
+    <input type="hidden" id="editId">
+
+    <div class="field">
+      <label>Photo</label>
+      <label class="file-drop" for="photoInput">
+        📸 Tap to upload photo
+        <input type="file" id="photoInput" accept="image/*">
+      </label>
+      <img id="photoPreview" class="thumb" alt="">
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Name</label>
+        <input id="mName" placeholder="e.g. Amina" maxlength="30">
+      </div>
+      <div class="field">
+        <label>Age</label>
+        <input id="mAge" placeholder="e.g. 24" maxlength="3" inputmode="numeric">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Location</label>
+      <input id="mLocation" placeholder="e.g. Nairobi" maxlength="40">
+    </div>
+
+    <div class="field">
+      <label>Pitch (one-liner shown on live)</label>
+      <input id="mPitch" placeholder="e.g. Looking for someone serious 💫" maxlength="80">
+    </div>
+
+    <div class="field">
+      <label>Script — one line per row</label>
+      <textarea id="mScript" placeholder="Hi guys, welcome to my live 💕&#10;I'm here to meet someone real tonight&#10;Raise your hand if you're serious"></textarea>
+    </div>
+
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
+      <button class="btn btn-primary" id="saveBtn">Save member</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========= TOAST ========= -->
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* =========================================================
+   SUPABASE CONFIG
+   ========================================================= */
+const SUPABASE_URL  = 'https://isoautwpyzaquawyzbbv.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb2F1dHdweXphcXVhd3l6YmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NjYyMzUsImV4cCI6MjEwNTA0MjIzNX0.GpdO1B6aR_oOfwmnDbs3kBLvUVkRsZhJMGhcIXJx7RQ';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const $ = id => document.getElementById(id);
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let currentUser = null;
+let members = [];
+let photoDataURL = null;
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+let toastTimer = null;
+function toast(msg, type='ok'){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast on ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 2800);
+}
+
+/* =========================================================
+   BOOT — guard access, load admin info, load members
+   ========================================================= */
+(async () => {
+  // 1. Must be logged in
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session){
+    window.location.href = 'admin-login.html';
+    return;
+  }
+
+  // 2. Must be admin
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, full_name')
+    .eq('id', session.user.id)
+    .single();
+
+  if(!profile || profile.role !== 'admin'){
+    await supabase.auth.signOut();
+    window.location.href = 'admin-login.html';
+    return;
+  }
+
+  currentUser = session.user;
+  $('statAdmin').textContent = profile.full_name || session.user.email;
+
+  // 3. Load members
+  await loadMembers();
+})();
+
+/* =========================================================
+   LOAD MEMBERS
+   ========================================================= */
+async function loadMembers(){
+  $('memberList').innerHTML = '<div class="loading">Loading members...</div>';
+
+  const { data, error } = await supabase
+    .from('members')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if(error){
+    $('memberList').innerHTML = `<div class="empty">
+      <div class="empty-icon">⚠️</div>
+      <div class="empty-title">Could not load members</div>
+      <div class="empty-sub">${error.message}</div>
+    </div>`;
+    return;
+  }
+
+  members = data || [];
+  renderMembers();
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function renderMembers(){
+  $('statMembers').textContent = members.length;
+  $('memberCount').textContent = members.length + ' total';
+
+  const live = members.find(m => m.is_live);
+  $('statLive').textContent = live ? live.name : '—';
+
+  if(members.length === 0){
+    $('memberList').innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">🎬</div>
+        <div class="empty-title">No members yet</div>
+        <div class="empty-sub">Add your first host — photo, name, and a script for them to say on the live session.</div>
+        <button class="btn btn-primary" onclick="document.getElementById('addBtn').click()">+ Add your first member</button>
+      </div>`;
+    return;
+  }
+
+  $('memberList').innerHTML = members.map(m => {
+    const ageLoc = [m.age, m.location].filter(Boolean).join(' • ') || '—';
+    const img = m.photo_url || 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72"><rect width="100%" height="100%" fill="#2a1a3e"/><text x="50%" y="55%" font-size="20" fill="#666" text-anchor="middle" font-family="sans-serif">📸</text></svg>');
+
+    return `
+      <div class="member ${m.is_live?'live':''}" data-id="${m.id}">
+        <img class="member-img" src="${img}" alt="">
+        <div class="member-body">
+          <div class="member-name">
+            ${escapeHtml(m.name || 'Unnamed')}
+            ${m.is_live ? '<span class="live-dot">LIVE</span>' : ''}
+          </div>
+          <div class="member-meta">${escapeHtml(ageLoc)}</div>
+          ${m.pitch ? `<div class="member-pitch">"${escapeHtml(m.pitch)}"</div>` : ''}
+        </div>
+        <div class="member-actions">
+          ${m.is_live
+            ? `<button class="btn btn-ghost" onclick="setLive('${m.id}', false)">Stop live</button>`
+            : `<button class="btn btn-success" onclick="setLive('${m.id}', true)">Go live</button>`}
+          <button class="btn btn-ghost" onclick="editMember('${m.id}')">Edit</button>
+          <button class="btn btn-danger" onclick="deleteMember('${m.id}')">Delete</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function escapeHtml(str){
+  return String(str || '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+/* =========================================================
+   OPEN / CLOSE MODAL
+   ========================================================= */
+function openModal(mode, member){
+  $('memberModal').classList.add('on');
+  $('modalTitle').textContent = mode === 'edit' ? 'Edit member' : 'Add member';
+  $('editId').value = member?.id || '';
+  $('mName').value     = member?.name || '';
+  $('mAge').value      = member?.age || '';
+  $('mLocation').value = member?.location || '';
+  $('mPitch').value    = member?.pitch || '';
+  $('mScript').value   = member?.script || '';
+  photoDataURL = member?.photo_url || null;
+
+  const p = $('photoPreview');
+  if(photoDataURL){ p.src = photoDataURL; p.classList.add('on'); }
+  else { p.classList.remove('on'); p.src = ''; }
+}
+
+function closeModal(){
+  $('memberModal').classList.remove('on');
+  $('editId').value = '';
+  photoDataURL = null;
+  ['mName','mAge','mLocation','mPitch','mScript'].forEach(id => $(id).value = '');
+  $('photoPreview').classList.remove('on');
+  $('photoInput').value = '';
+}
+
+$('addBtn').addEventListener('click', () => openModal('add'));
+$('modalClose').addEventListener('click', closeModal);
+$('cancelBtn').addEventListener('click', closeModal);
+$('memberModal').addEventListener('click', e => {
+  if(e.target === $('memberModal')) closeModal();
+});
+
+/* =========================================================
+   PHOTO PREVIEW
+   ========================================================= */
+$('photoInput').addEventListener('change', e => {
+  const f = e.target.files[0]; if(!f) return;
+  if(f.size > 4 * 1024 * 1024){ toast('Image must be under 4MB', 'err'); return; }
+  const r = new FileReader();
+  r.onload = ev => {
+    photoDataURL = ev.target.result;
+    const p = $('photoPreview');
+    p.src = photoDataURL;
+    p.classList.add('on');
+  };
+  r.readAsDataURL(f);
+});
+
+/* =========================================================
+   SAVE MEMBER (insert or update)
+   ========================================================= */
+$('saveBtn').addEventListener('click', async () => {
+  const name = $('mName').value.trim();
+  if(!name){ toast('Name is required', 'err'); return; }
+
+  const age = parseInt($('mAge').value, 10) || null;
+
+  const payload = {
+    name,
+    age,
+    location: $('mLocation').value.trim() || null,
+    pitch: $('mPitch').value.trim() || null,
+    script: $('mScript').value.trim() || null,
+    photo_url: photoDataURL,
+    created_by: currentUser.id
+  };
+
+  const editId = $('editId').value;
+  const btn = $('saveBtn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  let error;
+  if(editId){
+    // Only send these fields — don't overwrite is_live
+    const update = { name, age, location: payload.location, pitch: payload.pitch, script: payload.script };
+    if(photoDataURL) update.photo_url = photoDataURL;
+    ({ error } = await supabase.from('members').update(update).eq('id', editId));
+  } else {
+    ({ error } = await supabase.from('members').insert(payload));
+  }
+
+  btn.disabled = false; btn.textContent = 'Save member';
+
+  if(error){ toast(error.message, 'err'); return; }
+
+  toast(editId ? 'Member updated' : 'Member added', 'ok');
+  closeModal();
+  await loadMembers();
+});
+
+/* =========================================================
+   EDIT
+   ========================================================= */
+window.editMember = function(id){
+  const m = members.find(x => x.id === id);
+  if(m) openModal('edit', m);
+};
+
+/* =========================================================
+   DELETE
+   ========================================================= */
+window.deleteMember = async function(id){
+  const m = members.find(x => x.id === id);
+  if(!m) return;
+  if(!confirm(`Delete "${m.name}"? This cannot be undone.`)) return;
+
+  const { error } = await supabase.from('members').delete().eq('id', id);
+  if(error){ toast(error.message, 'err'); return; }
+  toast('Member deleted', 'ok');
+  await loadMembers();
+};
+
+/* =========================================================
+   SET LIVE — only one member live at a time
+   ========================================================= */
+window.setLive = async function(id, live){
+  // Turn OFF everyone first
+  if(live){
+    const { error: e1 } = await supabase.from('members').update({ is_live: false }).neq('id', id);
+    if(e1){ toast(e1.message, 'err'); return; }
+  }
+
+  // Toggle the target
+  const { error } = await supabase.from('members').update({ is_live: live }).eq('id', id);
+  if(error){ toast(error.message, 'err'); return; }
+
+  toast(live ? 'Host is now LIVE' : 'Host stopped', 'ok');
+  await loadMembers();
+};
+
+/* =========================================================
+   PREVIEW LIVE
+   ========================================================= */
+$('previewBtn').addEventListener('click', () => {
+  window.open('live-session.html', '_blank');
+});
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+$('logoutBtn').addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  window.location.href = 'admin-login.html';
+});
+</script>
+</body>
+</html>
