@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+<title>Live — LiveLink</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-system,sans-serif;color:#fff;overflow:hidden;}
+
+/* ========= APP CONTAINER ========= */
+.app{
+  position:relative;width:100%;max-width:430px;height:100vh;max-height:932px;
+  margin:0 auto;background:#160000;overflow:hidden;
+}
+
+/* ========= LAYER 5 — HOST PHOTO ========= */
+.layer-video{
+  position:absolute;inset:0;z-index:5;
+  background:radial-gradient(circle at 50% 40%,rgba(255,45,120,0.15),transparent 65%),
+             linear-gradient(160deg,#1a0010,#160000 60%,#0a0000 100%);
+  overflow:hidden;
+}
+.host-img{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  max-width:100%;max-height:100%;
+  object-fit:contain;
+  will-change:transform;
+}
+.host-img.bob{animation:bob 3.6s ease-in-out infinite;}
+@keyframes bob{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg);}
+  25%  {transform:translate(-50%,calc(-50% - 3px)) rotate(-0.4deg);}
+  50%  {transform:translate(-50%,-50%) rotate(0deg);}
+  75%  {transform:translate(-50%,calc(-50% - 2px)) rotate(0.4deg);}
+}
+
+/* Mouth overlay */
+.mouth{
+  position:absolute;
+  background:radial-gradient(ellipse at center,#0a0202 0%,#1a0505 60%,transparent 100%);
+  border-radius:50%;transform-origin:center;opacity:0;
+  pointer-events:none;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,0.95);
+  transition:opacity 0.12s;
+}
+.mouth.on{opacity:1;}
+.mouth.talking{animation:mouthTalk 0.13s steps(2,end) infinite;}
+@keyframes mouthTalk{
+  0%{transform:scaleY(0.15);}
+  50%{transform:scaleY(1);}
+  100%{transform:scaleY(0.15);}
+}
+
+/* Dark gradient at bottom of video for text legibility */
+.video-fade{
+  position:absolute;left:0;right:0;bottom:0;height:55%;z-index:6;
+  background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.35) 50%,rgba(0,0,0,0.75) 100%);
+  pointer-events:none;
+}
+
+/* ========= LAYER 9 — TOP BAR (LIVE + viewers + close) ========= */
+.layer-top{
+  position:absolute;top:0;left:0;right:0;z-index:9;
+  padding:14px 12px;
+  padding-top:max(14px,env(safe-area-inset-top));
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.55),transparent);
+}
+
+.live-badge{
+  display:flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,#ff2d78,#ff5c2d);
+  padding:5px 11px;border-radius:100px;
+  font-size:11px;font-weight:900;letter-spacing:0.6px;
+  box-shadow:0 0 18px rgba(255,45,120,0.65);
+}
+.live-badge .dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+.top-right{display:flex;align-items:center;gap:8px;}
+.viewers{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  padding:5px 10px;border-radius:100px;
+  font-size:11px;font-weight:700;
+}
+.viewers svg{width:13px;height:13px;fill:#fff;}
+.close-btn{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:none;color:#fff;font-size:14px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+
+/* ========= HOST INFO (bottom of video) ========= */
+.host-info{
+  position:absolute;left:12px;right:110px;bottom:16px;z-index:9;
+}
+.host-name{
+  font-size:19px;font-weight:800;letter-spacing:-0.3px;
+  display:flex;align-items:center;gap:6px;
+  text-shadow:0 2px 10px rgba(0,0,0,0.95);
+  line-height:1.15;
+}
+.verified{
+  width:16px;height:16px;border-radius:50%;
+  background:linear-gradient(135deg,#3b82f6,#8b5cf6);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:900;flex:0 0 16px;
+}
+.host-meta{
+  font-size:12px;color:rgba(255,255,255,0.9);
+  margin-top:3px;font-weight:500;
+  text-shadow:0 2px 8px rgba(0,0,0,0.9);
+}
+.host-pitch{
+  font-size:12.5px;color:rgba(255,255,255,0.85);
+  margin-top:6px;line-height:1.4;font-weight:500;
+  text-shadow:0 2px 8px rgba(0,0,0,0.9);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+
+/* Caption — current spoken line, centered under host */
+.caption{
+  position:absolute;left:50%;bottom:70px;transform:translateX(-50%);
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:8px 14px;border-radius:18px;
+  font-size:13px;font-weight:600;line-height:1.35;
+  max-width:calc(100% - 130px);text-align:center;
+  opacity:0;transition:opacity 0.25s;z-index:9;
+}
+.caption.on{opacity:1;}
+
+/* ========= LAYER 10 — CHAT ========= */
+.layer-chat{
+  position:absolute;left:12px;right:104px;bottom:90px;z-index:10;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  gap:6px;max-height:38vh;
+  mask-image:linear-gradient(to top,transparent 0%,#000 20%);
+  -webkit-mask-image:linear-gradient(to top,transparent 0%,#000 20%);
+  pointer-events:none;
+}
+.msg{
+  display:flex;gap:6px;align-items:flex-start;
+  animation:msgIn 0.4s ease;
+}
+.msg .avatar{
+  width:26px;height:26px;border-radius:50%;flex:0 0 26px;
+  background:linear-gradient(135deg,#ff2d78,#8b5cf6);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:900;color:#fff;
+  border:1px solid rgba(255,255,255,0.3);
+}
+.msg .body{
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  padding:5px 10px;border-radius:14px;
+  font-size:12.5px;line-height:1.35;
+  max-width:100%;
+  word-break:break-word;
+}
+.msg .name{
+  color:#ff8bb8;font-weight:700;
+  margin-right:4px;
+}
+.msg.system .body{
+  background:rgba(255,45,120,0.2);
+  color:#ff8bb8;font-weight:700;font-size:11.5px;
+  padding:4px 10px;border-radius:100px;
+}
+@keyframes msgIn{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ========= LAYER 11 — BOTTOM ACTION BAR ========= */
+.layer-actions{
+  position:absolute;left:0;right:0;bottom:0;z-index:11;
+  padding:10px 12px;
+  padding-bottom:max(10px,env(safe-area-inset-bottom));
+  background:linear-gradient(to top,rgba(0,0,0,0.85) 40%,transparent);
+  display:flex;align-items:center;gap:8px;
+}
+.action-input{
+  flex:1;height:40px;border-radius:100px;
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.6);font-size:13px;
+  padding:0 16px;outline:none;font-family:inherit;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.action-input::placeholder{color:rgba(255,255,255,0.45);}
+
+.icon-btn{
+  width:40px;height:40px;border-radius:50%;flex:0 0 40px;
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform 0.15s;
+  position:relative;
+}
+.icon-btn:active{transform:scale(0.9);}
+.icon-btn.gift{background:linear-gradient(135deg,#ff2d78,#8b5cf6);border-color:transparent;box-shadow:0 4px 16px rgba(255,45,120,0.4);}
+.icon-btn.gift .badge{
+  position:absolute;top:-2px;right:-2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#fff;color:#ff2d78;
+  font-size:9px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid #160000;
+}
+
+/* ========= LAYER 27 — SCROLL BUTTONS (right side) ========= */
+.scroll-btns{
+  position:absolute;right:12px;z-index:27;
+  top:calc(-102px + 50vh);
+  display:flex;flex-direction:column;gap:8px;
+  opacity:0.75;
+}
+.scroll-btn{
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:none;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.scroll-btn svg{width:18px;height:18px;fill:#fff;}
+
+/* ========= FLOATING GIFTS ========= */
+.gift-float{
+  position:absolute;
+  font-size:26px;pointer-events:none;z-index:30;
+  animation:giftUp 3s ease-out forwards;
+  filter:drop-shadow(0 0 6px rgba(255,45,120,0.8));
+}
+@keyframes giftUp{
+  0%{opacity:0;transform:translateY(20px) scale(0.6);}
+  20%{opacity:1;transform:translateY(0) scale(1.1);}
+  80%{opacity:1;transform:translateY(-140px) scale(1);}
+  100%{opacity:0;transform:translateY(-190px) scale(0.9);}
+}
+
+/* ========= HEART FLOAT ========= */
+.heart-float{
+  position:absolute;
+  font-size:22px;pointer-events:none;z-index:30;
+  animation:heartUp 1.8s ease-out forwards;
+}
+@keyframes heartUp{
+  0%{opacity:1;transform:translateY(0) scale(0.8);}
+  100%{opacity:0;transform:translateY(-180px) scale(1.4);}
+}
+
+/* ========= OFFLINE SCREEN ========= */
+.offline{
+  position:absolute;inset:0;z-index:60;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;background:#0a0a0f;padding:32px;text-align:center;
+}
+.offline.on{display:flex;}
+.offline-icon{
+  width:88px;height:88px;border-radius:50%;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  display:flex;align-items:center;justify-content:center;font-size:40px;
+}
+.offline-title{font-size:20px;font-weight:900;letter-spacing:-0.4px;}
+.offline-sub{font-size:13.5px;color:rgba(255,255,255,0.5);max-width:280px;line-height:1.55;}
+.offline-btn{
+  margin-top:10px;padding:11px 22px;border-radius:100px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.12);
+  color:#fff;font-size:13px;font-weight:700;cursor:pointer;
+}
+
+/* ========= LOADING ========= */
+.loading{
+  position:absolute;inset:0;z-index:70;
+  display:none;align-items:center;justify-content:center;
+  background:#160000;color:rgba(255,255,255,0.5);font-size:13px;
+}
+.loading.on{display:flex;}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ========= LAYER 5 — HOST PHOTO ========= -->
+  <div class="layer-video" id="layerVideo">
+    <img class="host-img bob" id="hostImg" alt="">
+    <div class="mouth" id="mouth"></div>
+  </div>
+  <div class="video-fade"></div>
+
+  <!-- ========= LAYER 9 — TOP BAR ========= -->
+  <div class="layer-top">
+    <div class="live-badge"><span class="dot"></span>LIVE</div>
+    <div class="top-right">
+      <div class="viewers">
+        <svg viewBox="0 0 24 24"><path d="M12 5c-5 0-9 4.5-9 7s4 7 9 7 9-4.5 9-7-4-7-9-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
+        <span id="viewerCount">0</span>
+      </div>
+      <button class="close-btn" id="closeBtn">✕</button>
+    </div>
+  </div>
+
+  <!-- ========= HOST INFO ========= -->
+  <div class="host-info" id="hostInfo">
+    <div class="host-name">
+      <span id="hostName">Host</span>
+      <span class="verified">✓</span>
+    </div>
+    <div class="host-meta" id="hostMeta">— • —</div>
+    <div class="host-pitch" id="hostPitch"></div>
+  </div>
+
+  <!-- ========= CAPTION ========= -->
+  <div class="caption" id="caption"></div>
+
+  <!-- ========= LAYER 10 — CHAT ========= -->
+  <div class="layer-chat" id="chatScroll"></div>
+
+  <!-- ========= LAYER 27 — SCROLL BUTTONS ========= -->
+  <div class="scroll-btns">
+    <button class="scroll-btn" aria-label="Previous">
+      <svg viewBox="0 0 48 48"><path d="m24 19.25 13.67 13.67a1 1 0 0 0 1.41 0l1.84-1.84a1 1 0 0 0 0-1.41L24.71 13.46a1 1 0 0 0-1.42 0L7.1 29.66a1 1 0 0 0 0 1.42l1.83 1.84a1 1 0 0 0 1.41 0L24 19.25Z"/></svg>
+    </button>
+    <button class="scroll-btn" aria-label="Next">
+      <svg viewBox="0 0 48 48"><path d="m24 28.75 13.67-13.67a1 1 0 0 1 1.41 0l1.84 1.84a1 1 0 0 1 0 1.41L24.71 34.54a1 1 0 0 1-1.42 0L7.1 18.34a1 1 0 0 1 0-1.42l1.83-1.84a1 1 0 0 1 1.41 0L24 28.75Z"/></svg>
+    </button>
+  </div>
+
+  <!-- ========= LAYER 11 — ACTION BAR ========= -->
+  <div class="layer-actions">
+    <input class="action-input" id="chatInput" placeholder="Say something..." maxlength="120">
+    <button class="icon-btn gift" id="giftBtn">
+      🎁
+      <span class="badge" id="giftCount">0</span>
+    </button>
+    <button class="icon-btn" id="likeBtn">❤️</button>
+  </div>
+
+  <!-- ========= OFFLINE ========= -->
+  <div class="offline" id="offlineScreen">
+    <div class="offline-icon">📴</div>
+    <div class="offline-title">Host is offline</div>
+    <div class="offline-sub">No one is live right now. Check back soon to catch the next stream.</div>
+    <button class="offline-btn" id="offlineLogout">Log out</button>
+  </div>
+
+  <!-- ========= LOADING ========= -->
+  <div class="loading on" id="loadingScreen">Connecting to live...</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* =========================================================
+   SUPABASE CONFIG
+   ========================================================= */
+const SUPABASE_URL  = 'https://isoautwpyzaquawyzbbv.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb2F1dHdweXphcXVhd3l6YmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NjYyMzUsImV4cCI6MjEwNTA0MjIzNX0.GpdO1B6aR_oOfwmnDbs3kBLvUVkRsZhJMGhcIXJx7RQ';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const $ = id => document.getElementById(id);
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let currentUser = null;
+let liveHost = null;
+let viewerBase = 0;
+let viewerTimer = null;
+let chatTimer = null;
+let giftTimer = null;
+let giftCount = 0;
+let speechLoop = null;
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+(async () => {
+  // 1. must be logged in
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session){
+    window.location.href = 'index.html';
+    return;
+  }
+  currentUser = session.user;
+
+  // 2. load live host
+  await loadLiveHost();
+
+  // 3. hide loading
+  $('loadingScreen').classList.remove('on');
+})();
+
+/* =========================================================
+   LOAD LIVE HOST FROM SUPABASE
+   ========================================================= */
+async function loadLiveHost(){
+  const { data, error } = await supabase
+    .from('members')
+    .select('*')
+    .eq('is_live', true)
+    .limit(1)
+    .maybeSingle();
+
+  if(error){
+    console.error('Could not load live host:', error);
+  }
+
+  if(!data){
+    // no one live → offline screen
+    $('offlineScreen').classList.add('on');
+    return;
+  }
+
+  liveHost = data;
+  renderHost(liveHost);
+  startEverything();
+}
+
+/* =========================================================
+   RENDER HOST
+   ========================================================= */
+function renderHost(host){
+  $('hostName').textContent = host.name || 'Host';
+  $('hostMeta').textContent = [host.age, host.location].filter(Boolean).join(' • ') || '— • —';
+  $('hostPitch').textContent = host.pitch ? `"${host.pitch}"` : '';
+
+  const img = host.photo_url || 'data:image/svg+xml;utf8,'+encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500"><rect width="100%" height="100%" fill="#2a0010"/><text x="50%" y="50%" font-size="22" fill="#fff" text-anchor="middle" font-family="sans-serif">No photo</text></svg>'
+  );
+  $('hostImg').src = img;
+}
+
+/* =========================================================
+   START ALL LIVE ANIMATIONS
+   ========================================================= */
+function startEverything(){
+  startViewerTicker();
+  startChatFeed();
+  startGiftDrops();
+  if(liveHost.script){
+    const lines = liveHost.script.split('\n').map(s=>s.trim()).filter(Boolean);
+    if(lines.length) startSpeaking(lines);
+  }
+}
+
+/* =========================================================
+   VIEWER COUNT
+   ========================================================= */
+function startViewerTicker(){
+  viewerBase = 800 + Math.floor(Math.random() * 900);
+  $('viewerCount').textContent = viewerBase.toLocaleString();
+  viewerTimer = setInterval(() => {
+    viewerBase += Math.floor(Math.random() * 6) - 1;
+    if(viewerBase < 500) viewerBase = 500;
+    $('viewerCount').textContent = viewerBase.toLocaleString();
+  }, 1800);
+}
+
+/* =========================================================
+   CHAT FEED
+   ========================================================= */
+const NAMES = ['James','Kevo','Brian','Dennis','Sam','Alex','Tony','Mike','Chris','Danny','Ray','Collins','Moses','Felix','Vince','Yusuf','Ibrahim','Peter','John','Mercy','Grace','Faith','Hope'];
+const MSGS = [
+  'Hi beautiful 😍','Mambo!','You look amazing 🔥','Can we talk?','Hey from Mombasa 👋',
+  'Beautiful 😍',"Let's connect!",'Wueeh 😅','Uko live tena!','Send me your number',
+  'I like your vibe ❤️','Where you at?','Am here for you','Tuma salamu','😍😍😍',
+  'You are the one','Nimefika','Hello queen 👑','Tuko pamoja','Talk to me',
+  'Nice voice 🎤','Karibu','Sasa!','Poa sana'
+];
+function startChatFeed(){
+  (function drop(){
+    const sys = Math.random() < 0.1;
+    const d = document.createElement('div');
+    if(sys){
+      d.className = 'msg system';
+      const w = NAMES[Math.floor(Math.random()*NAMES.length)];
+      d.innerHTML = `<div class="body">🎉 <b>${w}</b> joined</div>`;
+    } else {
+      d.className = 'msg';
+      const w = NAMES[Math.floor(Math.random()*NAMES.length)];
+      const t = MSGS[Math.floor(Math.random()*MSGS.length)];
+      d.innerHTML = `<div class="avatar">${w[0]}</div><div class="body"><span class="name">${w}</span>${t}</div>`;
+    }
+    const c = $('chatScroll');
+    c.appendChild(d);
+    if(c.children.length > 6) c.removeChild(c.firstChild);
+    chatTimer = setTimeout(drop, 800 + Math.random()*1800);
+  })();
+}
+
+/* =========================================================
+   GIFTS FLOATING
+   ========================================================= */
+function startGiftDrops(){
+  const gifts = ['🌹','💎','🦁','🚀','💖','👑','🎉','🌹'];
+  giftTimer = setInterval(() => {
+    const g = document.createElement('div');
+    g.className = 'gift-float';
+    g.textContent = gifts[Math.floor(Math.random()*gifts.length)];
+    g.style.left = (10 + Math.random()*65) + '%';
+    g.style.bottom = '100px';
+    $('app').appendChild(g);
+    setTimeout(() => g.remove(), 3000);
+  }, 2200 + Math.random()*2500);
+}
+
+/* =========================================================
+   SPEAK SCRIPT (TTS + mouth animation)
+   ========================================================= */
+let voices = [];
+function loadVoices(){
+  voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+  if(!voices.length) voices = speechSynthesis.getVoices();
+}
+speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+
+let mouthX = 50, mouthY = 62, mouthW = 44, mouthH = 20;
+function positionMouth(){
+  const stage = $('layerVideo');
+  const w = stage.clientWidth, h = stage.clientHeight;
+  const m = $('mouth');
+  m.style.left = (mouthX/100*w - mouthW/2) + 'px';
+  m.style.top  = (mouthY/100*h - mouthH/2) + 'px';
+  m.style.width = mouthW + 'px';
+  m.style.height = mouthH + 'px';
+}
+window.addEventListener('resize', positionMouth);
+
+function startSpeaking(lines){
+  const mouth = $('mouth');
+  const cap = $('caption');
+  positionMouth();
+  let i = 0;
+
+  function say(){
+    if(i >= lines.length){
+      speechLoop = setTimeout(() => { i = 0; say(); }, 3500);
+      return;
+    }
+    const text = lines[i++];
+    cap.textContent = text;
+    cap.classList.add('on');
+
+    const u = new SpeechSynthesisUtterance(text);
+    const v = voices[Math.floor(Math.random()*voices.length)];
+    if(v) u.voice = v;
+    u.rate = 1; u.pitch = 1.05;
+
+    u.onstart = () => {
+      mouth.classList.add('on','talking');
+    };
+    u.onend = () => {
+      mouth.classList.remove('talking');
+      setTimeout(() => cap.classList.remove('on'), 400);
+      speechLoop = setTimeout(say, 900);
+    };
+    u.onerror = () => {
+      mouth.classList.remove('talking');
+      speechLoop = setTimeout(say, 800);
+    };
+    speechSynthesis.speak(u);
+  }
+  say();
+}
+
+/* =========================================================
+   USER SENDING A CHAT MESSAGE
+   ========================================================= */
+$('chatInput').addEventListener('keydown', e => {
+  if(e.key !== 'Enter') return;
+  const text = e.target.value.trim();
+  if(!text) return;
+  e.target.value = '';
+
+  const d = document.createElement('div');
+  d.className = 'msg';
+  d.innerHTML = `<div class="avatar">You</div><div class="body"><span class="name">You</span>${escapeHtml(text)}</div>`;
+  const c = $('chatScroll');
+  c.appendChild(d);
+  if(c.children.length > 6) c.removeChild(c.firstChild);
+});
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+/* =========================================================
+   GIFT BUTTON
+   ========================================================= */
+$('giftBtn').addEventListener('click', () => {
+  const area = $('app');
+  for(let i=0;i<8;i++){
+    setTimeout(() => {
+      const g = document.createElement('div');
+      g.className = 'gift-float';
+      g.textContent = ['🎁','💎','🌹','💖'][i%4];
+      g.style.left = (5 + Math.random()*75) + '%';
+      g.style.bottom = '100px';
+      area.appendChild(g);
+      setTimeout(() => g.remove(), 3000);
+    }, i*90);
+  }
+  giftCount += 1;
+  $('giftCount').textContent = giftCount;
+});
+
+/* =========================================================
+   LIKE BUTTON
+   ========================================================= */
+$('likeBtn').addEventListener('click', () => {
+  const area = $('app');
+  for(let i=0;i<5;i++){
+    setTimeout(() => {
+      const h = document.createElement('div');
+      h.className = 'heart-float';
+      h.textContent = '❤️';
+      h.style.right = (20 + Math.random()*40) + 'px';
+      h.style.bottom = '90px';
+      area.appendChild(h);
+      setTimeout(() => h.remove(), 1800);
+    }, i*70);
+  }
+});
+
+/* =========================================================
+   CLOSE / LOGOUT
+   ========================================================= */
+async function logout(){
+  stopEverything();
+  await supabase.auth.signOut();
+  window.location.href = 'index.html';
+}
+$('closeBtn').addEventListener('click', logout);
+$('offlineLogout').addEventListener('click', logout);
+
+function stopEverything(){
+  speechSynthesis.cancel();
+  clearInterval(viewerTimer);
+  clearTimeout(chatTimer);
+  clearInterval(giftTimer);
+  clearTimeout(speechLoop);
+}
+</script>
+</body>
+</html>
