@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>Admin Login — LiveLink</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:#000;font-family:'Inter',system-ui,sans-serif;color:#fff;overflow:hidden;}
+
+.screen{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(255,45,120,0.18),transparent 55%),
+    radial-gradient(circle at 80% 80%,rgba(139,92,246,0.25),transparent 55%),
+    #08080d;
+}
+
+.auth-card{
+  width:100%;max-width:380px;
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:24px;padding:28px;
+  display:flex;flex-direction:column;gap:14px;
+  text-align:center;
+}
+
+.admin-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,#ff2d78,#8b5cf6);
+  padding:5px 12px;border-radius:100px;
+  font-size:10px;font-weight:900;letter-spacing:1px;
+  margin:0 auto 8px;box-shadow:0 0 20px rgba(255,45,120,0.5);
+}
+.admin-badge .dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+.brand{font-size:28px;font-weight:900;letter-spacing:-1px;}
+.brand span{background:linear-gradient(135deg,#ff2d78,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.brand-sub{font-size:12px;color:rgba(255,255,255,0.45);font-weight:500;margin-bottom:6px;}
+
+.field{display:flex;flex-direction:column;gap:6px;text-align:left;}
+.field label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);}
+.field input{
+  padding:14px 16px;border-radius:14px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;font-family:inherit;font-size:15px;
+  outline:none;transition:border-color 0.2s;
+}
+.field input:focus{border-color:#ff2d78;}
+
+.err-msg{font-size:12px;color:#ef4444;font-weight:600;display:none;text-align:center;line-height:1.4;}
+.err-msg.on{display:block;}
+
+.btn-primary{
+  padding:15px;border-radius:100px;
+  background:linear-gradient(135deg,#ff2d78,#8b5cf6);
+  border:none;color:#fff;font-size:15px;font-weight:800;letter-spacing:0.3px;
+  cursor:pointer;box-shadow:0 8px 28px rgba(255,45,120,0.4);
+  transition:transform 0.15s;
+}
+.btn-primary:active{transform:scale(0.97);}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
+
+.back-link{
+  font-size:12px;color:rgba(255,255,255,0.35);
+  text-decoration:none;margin-top:6px;display:inline-block;
+}
+.back-link:hover{color:rgba(255,255,255,0.6);}
+</style>
+</head>
+<body>
+
+<div class="screen">
+  <div class="auth-card">
+    <div class="admin-badge"><span class="dot"></span>ADMIN ACCESS</div>
+    <div class="brand">Live<span>Link</span></div>
+    <div class="brand-sub">Restricted area — administrators only</div>
+
+    <div class="field">
+      <label>Admin Email</label>
+      <input id="adminEmail" type="email" placeholder="Enter admin email" autocomplete="email">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="adminPass" type="password" placeholder="Enter password" autocomplete="current-password">
+    </div>
+
+    <button class="btn-primary" id="adminLoginBtn">Sign In as Admin</button>
+    <div class="err-msg" id="adminErr"></div>
+
+    <a class="back-link" href="index.html">← Back to user sign in</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL  = 'https://isoautwpyzaquawyzbbv.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb2F1dHdweXphcXVhd3l6YmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NjYyMzUsImV4cCI6MjEwNTA0MjIzNX0.GpdO1B6aR_oOfwmnDbs3kBLvUVkRsZhJMGhcIXJx7RQ';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const $ = id => document.getElementById(id);
+function showErr(msg){ $('adminErr').textContent = msg; $('adminErr').classList.add('on'); }
+function clearErr(){ $('adminErr').classList.remove('on'); }
+
+/* ---------- Already logged in as admin? skip straight to panel ---------- */
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session) return;
+  const { data: profile } = await supabase
+    .from('profiles').select('role').eq('id', session.user.id).single();
+  if(profile && profile.role === 'admin'){
+    window.location.href = 'admin-panel.html';
+  }
+})();
+
+/* ---------- SIGN IN AS ADMIN ---------- */
+async function signInAsAdmin(){
+  const email = $('adminEmail').value.trim();
+  const pass  = $('adminPass').value;
+  clearErr();
+
+  if(!email || !pass){ showErr('Please fill in both fields.'); return; }
+
+  const btn = $('adminLoginBtn');
+  btn.disabled = true; btn.textContent = 'Verifying...';
+
+  // 1. Auth
+  const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+    email, password: pass
+  });
+
+  if(authError){
+    btn.disabled = false; btn.textContent = 'Sign In as Admin';
+    showErr(authError.message);
+    return;
+  }
+
+  // 2. Role check
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles').select('role').eq('id', authData.user.id).single();
+
+  btn.disabled = false; btn.textContent = 'Sign In as Admin';
+
+  if(profileError || !profile){
+    await supabase.auth.signOut();
+    showErr('Admin profile not found.');
+    return;
+  }
+  if(profile.role !== 'admin'){
+    await supabase.auth.signOut();
+    showErr('This account does not have admin access.');
+    return;
+  }
+
+  // 3. Go
+  window.location.href = 'admin-panel.html';
+}
+
+$('adminLoginBtn').addEventListener('click', signInAsAdmin);
+['adminEmail','adminPass'].forEach(id => {
+  $(id).addEventListener('keydown', e => {
+    if(e.key === 'Enter') signInAsAdmin();
+  });
+});
+</script>
+</body>
+</html>
