@@ -108,10 +108,6 @@ select{padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.05);bo
 .offline-title{font-size:22px;font-weight:900;letter-spacing:-0.5px;}
 .offline-sub{font-size:14px;color:rgba(255,255,255,0.5);max-width:280px;line-height:1.5;}
 .offline-btn{margin-top:8px;padding:12px 24px;border-radius:100px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:13px;font-weight:700;cursor:pointer;}
-
-/* ========= LIVE HEADER (for regular users) ========= */
-.live-header{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top));}
-.user-logout{padding:8px 14px;border-radius:100px;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:12px;font-weight:600;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -275,15 +271,11 @@ function routeUser(email){
   if(isAdmin(email)){
     show('admin');
   } else {
-    // Regular user → Live Dashboard
     show('live');
-    // Check if a host has been set up
     if(!photoDataURL && !$('scriptInput').value.trim()){
-      // No host configured → show offline overlay
       $('offlineScreen').classList.add('on');
       $('closeLive').style.display = 'none';
     } else {
-      // Host exists → play the live view
       startRegularUserView();
     }
   }
@@ -396,7 +388,6 @@ $('goLiveBtn').addEventListener('click', () => {
 
 /* ---------- REGULAR USER: ENTER LIVE VIEW ---------- */
 function startRegularUserView(){
-  // Populate the live view from saved admin values
   const savedName = $('nameInput').value || 'Host';
   const savedAge = $('ageInput').value || '';
   const savedLoc = $('locInput').value || '';
@@ -406,7 +397,7 @@ function startRegularUserView(){
     $('hostImg').src = photoDataURL;
   }
   $('offlineScreen').classList.remove('on');
-  $('closeLive').style.display = 'none'; // regular users can't close the live
+  $('closeLive').style.display = 'none';
   setTimeout(() => {
     startChatter();
     startViewerTicker(1204);
@@ -471,7 +462,7 @@ function speakScript(lines){
 
 /* ---------- CHAT ---------- */
 const NAMES = ['James','Kevo','Brian','Dennis','Sam','Alex','Tony','Mike','Chris','Danny','Ray','Collins','Moses','Felix','Vince'];
-const MSGS = ['Hi beautiful 😍','Mambo!','You look amazing 🔥','Can we talk?','Hey from Mombasa 👋','Beautiful 😍','Let\\'s connect!','Wueeh 😅','Uko live tena!','Send me your number','I like your vibe ❤️','Where you at?','Am here for you','Tuma salamu','😍😍😍','You are the one','Nimefika','Hello queen 👑','Tuko pamoja','Talk to me'];
+const MSGS = ['Hi beautiful 😍','Mambo!','You look amazing 🔥','Can we talk?','Hey from Mombasa 👋','Beautiful 😍',"Let's connect!",'Wueeh 😅','Uko live tena!','Send me your number','I like your vibe ❤️','Where you at?','Am here for you','Tuma salamu','😍😍😍','You are the one','Nimefika','Hello queen 👑','Tuko pamoja','Talk to me'];
 function startChatter(){
   const scroll = $('chatScroll');
   (function drop(){
