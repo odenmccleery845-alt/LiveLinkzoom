@@ -10,7 +10,6 @@
 html,body{min-height:100%;background:#0a0a0f;font-family:'Inter',system-ui,sans-serif;color:#fff;}
 body{padding-bottom:60px;}
 
-/* ========= TOP BAR ========= */
 .topbar{
   position:sticky;top:0;z-index:50;
   display:flex;align-items:center;justify-content:space-between;
@@ -37,7 +36,6 @@ body{padding-bottom:60px;}
 }
 .logout-btn:hover{background:rgba(255,45,120,0.15);border-color:rgba(255,45,120,0.4);}
 
-/* ========= TABS ========= */
 .tabs{
   display:flex;gap:4px;
   padding:12px 20px 0;
@@ -56,25 +54,21 @@ body{padding-bottom:60px;}
 .tab.on{color:#fff;border-bottom-color:#ff2d78;}
 .tab:hover{color:rgba(255,255,255,0.8);}
 
-/* ========= CONTAINER ========= */
 .wrap{max-width:920px;margin:0 auto;padding:24px 20px;}
 .view{display:none;}
 .view.on{display:block;}
 
-/* ========= STATS ========= */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
 .stat{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px;}
 .stat .k{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.45);}
 .stat .v{font-size:24px;font-weight:900;letter-spacing:-0.5px;margin-top:6px;}
 .stat .v.live{color:#22c55e;}
 
-/* ========= SECTION HEAD ========= */
 .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;margin-top:8px;gap:10px;flex-wrap:wrap;}
 .section-head h2{font-size:16px;font-weight:800;letter-spacing:-0.3px;}
 .section-head .right{display:flex;gap:10px;align-items:center;}
 .section-head .count{font-size:12px;color:rgba(255,255,255,0.4);font-weight:600;}
 
-/* ========= BUTTONS ========= */
 .btn{padding:11px 20px;border-radius:100px;font-size:13px;font-weight:800;letter-spacing:0.3px;border:none;cursor:pointer;font-family:inherit;transition:transform 0.15s;}
 .btn:active{transform:scale(0.97);}
 .btn-primary{background:linear-gradient(135deg,#ff2d78,#8b5cf6);color:#fff;box-shadow:0 6px 20px rgba(255,45,120,0.35);}
@@ -83,7 +77,6 @@ body{padding-bottom:60px;}
 .btn-success{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 6px 20px rgba(34,197,94,0.3);}
 .btn-sm{padding:7px 12px;font-size:11px;}
 
-/* ========= CARDS ========= */
 .card{
   display:flex;gap:14px;padding:14px;
   background:rgba(255,255,255,0.03);
@@ -116,13 +109,11 @@ body{padding-bottom:60px;}
 }
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
-/* ========= EMPTY ========= */
 .empty{text-align:center;padding:48px 20px;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.1);border-radius:20px;}
 .empty-icon{font-size:42px;margin-bottom:12px;}
 .empty-title{font-size:16px;font-weight:800;margin-bottom:6px;}
 .empty-sub{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:18px;}
 
-/* ========= MODAL ========= */
 .modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
 .modal.on{display:flex;}
 .sheet{
@@ -173,7 +164,6 @@ body{padding-bottom:60px;}
 .sheet-actions{display:flex;gap:10px;margin-top:20px;}
 .sheet-actions .btn{flex:1;padding:14px;}
 
-/* ========= LINK RESULT ========= */
 .link-box{
   display:none;
   background:rgba(34,197,94,0.08);
@@ -191,7 +181,6 @@ body{padding-bottom:60px;}
 .link-note{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.5;}
 .link-note b{color:#ff2d78;}
 
-/* ========= TOAST ========= */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a24;border:1px solid rgba(255,255,255,0.1);padding:12px 20px;border-radius:100px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:all 0.3s;max-width:90vw;text-align:center;}
 .toast.on{transform:translateX(-50%) translateY(0);opacity:1;}
 .toast.err{border-color:rgba(239,68,68,0.4);color:#f87171;}
@@ -202,7 +191,6 @@ body{padding-bottom:60px;}
 </head>
 <body>
 
-<!-- ========= TOP BAR ========= -->
 <div class="topbar">
   <div class="brand">Live<span>Link</span><span class="brand-badge">ADMIN</span></div>
   <div class="topbar-right">
@@ -210,7 +198,6 @@ body{padding-bottom:60px;}
   </div>
 </div>
 
-<!-- ========= TABS ========= -->
 <div class="tabs">
   <button class="tab on" id="tabRooms">Rooms</button>
   <button class="tab" id="tabMembers">Members</button>
@@ -218,7 +205,6 @@ body{padding-bottom:60px;}
 
 <div class="wrap">
 
-  <!-- ========= ROOMS VIEW ========= -->
   <div class="view on" id="viewRooms">
     <div class="stats">
       <div class="stat"><div class="k">Total rooms</div><div class="v" id="statRooms">0</div></div>
@@ -239,7 +225,6 @@ body{padding-bottom:60px;}
     </div>
   </div>
 
-  <!-- ========= MEMBERS VIEW ========= -->
   <div class="view" id="viewMembers">
     <div class="section-head">
       <h2>Members</h2>
@@ -256,7 +241,6 @@ body{padding-bottom:60px;}
 
 </div>
 
-<!-- ========= GENERATE INVITE MODAL ========= -->
 <div class="modal" id="inviteModal">
   <div class="sheet">
     <div class="sheet-head">
@@ -265,9 +249,9 @@ body{padding-bottom:60px;}
     </div>
 
     <div class="field">
-      <label>Room code <span class="hint">goes in the URL</span></label>
+      <label>Room code <span class="hint">lowercase, letters/numbers only</span></label>
       <div class="inline">
-        <input id="rCode" placeholder="e.g. ClassyDateZoom" maxlength="30">
+        <input id="rCode" placeholder="e.g. classydatezoom" maxlength="30">
         <button class="gen-btn" id="genCode">Generate</button>
       </div>
     </div>
@@ -275,7 +259,7 @@ body{padding-bottom:60px;}
     <div class="field">
       <label>Passcode <span class="hint">user must type this to enter</span></label>
       <div class="inline">
-        <input id="rPasscode" placeholder="e.g. A1234" maxlength="20">
+        <input id="rPasscode" placeholder="e.g. a1234" maxlength="20">
         <button class="gen-btn" id="genPasscode">Generate</button>
       </div>
     </div>
@@ -317,7 +301,6 @@ body{padding-bottom:60px;}
   </div>
 </div>
 
-<!-- ========= MEMBER MODAL ========= -->
 <div class="modal" id="memberModal">
   <div class="sheet">
     <div class="sheet-head">
@@ -360,9 +343,6 @@ body{padding-bottom:60px;}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* =========================================================
-   CONFIG
-   ========================================================= */
 const SUPABASE_URL  = 'https://isoautwpyzaquawyzbbv.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb2F1dHdweXphcXVhd3l6YmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NjYyMzUsImV4cCI6MjEwNTA0MjIzNX0.GpdO1B6aR_oOfwmnDbs3kBLvUVkRsZhJMGhcIXJx7RQ';
 
@@ -371,18 +351,12 @@ const APP_BASE_URL = 'https://livelinkzoom.onrender.com';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 const $ = id => document.getElementById(id);
 
-/* =========================================================
-   STATE
-   ========================================================= */
 let currentUser = null;
 let members = [];
 let rooms = [];
 let photoDataURL = null;
 let lastCreatedRoom = null;
 
-/* =========================================================
-   TOAST
-   ========================================================= */
 let toastTimer = null;
 function toast(msg, type='ok'){
   const t = $('toast');
@@ -391,16 +365,23 @@ function toast(msg, type='ok'){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('on'), 2800);
 }
-
 function escapeHtml(str){
   return String(str || '').replace(/[&<>"']/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[c]));
 }
 
-/* =========================================================
-   BOOT
-   ========================================================= */
+/* ---------- ROOM CODE NORMALIZATION ---------- */
+function normalizeRoomCode(raw){
+  return String(raw || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-')     // anything not a-z0-9- becomes -
+    .replace(/-+/g, '-')             // collapse multiple hyphens
+    .replace(/^-|-$/g, '');          // trim leading/trailing hyphens
+}
+
+/* ---------- BOOT ---------- */
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
   if(!session){ window.location.href = 'admin-login.html'; return; }
@@ -419,9 +400,7 @@ function escapeHtml(str){
   await Promise.all([loadMembers(), loadRooms()]);
 })();
 
-/* =========================================================
-   TABS
-   ========================================================= */
+/* ---------- TABS ---------- */
 $('tabRooms').addEventListener('click', () => switchTab('rooms'));
 $('tabMembers').addEventListener('click', () => switchTab('members'));
 function switchTab(name){
@@ -431,9 +410,7 @@ function switchTab(name){
   $('viewMembers').classList.toggle('on', name === 'members');
 }
 
-/* =========================================================
-   LOAD MEMBERS
-   ========================================================= */
+/* ---------- LOAD MEMBERS ---------- */
 async function loadMembers(){
   $('membersList').innerHTML = '<div class="loading">Loading members...</div>';
   const { data, error } = await sb.from('members').select('*').order('created_at', { ascending: false });
@@ -488,9 +465,7 @@ function populateMemberSelect(){
   });
 }
 
-/* =========================================================
-   LOAD ROOMS
-   ========================================================= */
+/* ---------- LOAD ROOMS ---------- */
 async function loadRooms(){
   $('roomsList').innerHTML = '<div class="loading">Loading rooms...</div>';
   const { data, error } = await sb
@@ -503,13 +478,10 @@ async function loadRooms(){
   }
   rooms = data || [];
 
-  // Get guest counts per room
   let guestCounts = {};
   if(rooms.length){
     const ids = rooms.map(r => r.id);
-    const { data: gData } = await sb
-      .from('guests').select('room_id')
-      .in('room_id', ids);
+    const { data: gData } = await sb.from('guests').select('room_id').in('room_id', ids);
     (gData || []).forEach(g => {
       guestCounts[g.room_id] = (guestCounts[g.room_id] || 0) + 1;
     });
@@ -527,7 +499,7 @@ async function loadRooms(){
 
 function renderRooms(guestCounts){
   if(rooms.length === 0){
-    $('roomsList').innerHTML = `<div class="empty"><div class="empty-icon">🔗</div><div class="empty-title">No rooms yet</div><div class="empty-sub">Generate your first invite link. Pick a member, choose a room code, set a passcode, share the link.</div><button class="btn btn-primary" onclick="document.getElementById('genInviteBtn').click()">+ Generate invite</button></div>`;
+    $('roomsList').innerHTML = `<div class="empty"><div class="empty-icon">🔗</div><div class="empty-title">No rooms yet</div><div class="empty-sub">Generate your first invite link.</div><button class="btn btn-primary" onclick="document.getElementById('genInviteBtn').click()">+ Generate invite</button></div>`;
     return;
   }
 
@@ -559,19 +531,19 @@ function renderRooms(guestCounts){
           </div>
         </div>
         <div class="card-actions">
-          <button class="btn btn-primary btn-sm" onclick="joinRoom('${r.id}')">Join room</button>
-          <button class="btn btn-ghost btn-sm" onclick="copyRoomLink('${code}')">Copy link</button>
           ${r.is_active
-            ? `<button class="btn btn-danger btn-sm" onclick="endRoom('${r.id}')">End room</button>`
-            : `<button class="btn btn-ghost btn-sm" onclick="deleteRoom('${r.id}')">Delete</button>`}
+            ? `<button class="btn btn-primary btn-sm" onclick="joinRoom('${r.id}')">Join room</button>
+               <button class="btn btn-ghost btn-sm" onclick="copyRoomLink('${code}')">Copy link</button>
+               <button class="btn btn-danger btn-sm" onclick="endRoom('${r.id}')">End room</button>`
+            : `<button class="btn btn-success btn-sm" onclick="goLiveRoom('${r.id}')">🔴 Go Live</button>
+               <button class="btn btn-ghost btn-sm" onclick="copyRoomLink('${code}')">Copy link</button>
+               <button class="btn btn-ghost btn-sm" onclick="deleteRoom('${r.id}')">Delete</button>`}
         </div>
       </div>`;
   }).join('');
 }
 
-/* =========================================================
-   INVITE MODAL
-   ========================================================= */
+/* ---------- INVITE MODAL ---------- */
 function openInviteModal(){
   $('inviteModal').classList.add('on');
   $('rCode').value = '';
@@ -594,27 +566,31 @@ $('inviteModal').addEventListener('click', e => {
   if(e.target === $('inviteModal')) closeInviteModal();
 });
 
-/* =========================================================
-   GENERATORS
-   ========================================================= */
+/* Auto-normalize room code as user types */
+$('rCode').addEventListener('input', e => {
+  const pos = e.target.selectionStart;
+  const before = e.target.value;
+  e.target.value = normalizeRoomCode(before);
+  if(e.target.value !== before) e.target.setSelectionRange(pos, pos);
+});
+
+/* ---------- GENERATORS ---------- */
 function randomCode(len=8){
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
   let out = '';
   for(let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
   return out;
 }
 $('genCode').addEventListener('click', () => {
-  $('rCode').value = 'Room' + randomCode(6);
+  $('rCode').value = 'room-' + randomCode(6);
 });
 $('genPasscode').addEventListener('click', () => {
   $('rPasscode').value = randomCode(5);
 });
 
-/* =========================================================
-   CREATE ROOM
-   ========================================================= */
+/* ---------- CREATE ROOM ---------- */
 $('inviteCreateBtn').addEventListener('click', async () => {
-  const code = $('rCode').value.trim();
+  const code = normalizeRoomCode($('rCode').value);
   const passcode = $('rPasscode').value.trim();
   const memberId = $('rMember').value;
   const maxUsers = parseInt($('rMaxUsers').value, 10) || 20;
@@ -623,7 +599,6 @@ $('inviteCreateBtn').addEventListener('click', async () => {
   if(!code){ toast('Room code is required', 'err'); return; }
   if(!passcode){ toast('Passcode is required', 'err'); return; }
   if(!memberId){ toast('Pick a host member', 'err'); return; }
-  if(!/^[A-Za-z0-9_-]+$/.test(code)){ toast('Room code: letters, numbers, - and _ only', 'err'); return; }
 
   const expiresAt = new Date(Date.now() + hours * 3600 * 1000).toISOString();
 
@@ -660,29 +635,24 @@ $('inviteCreateBtn').addEventListener('click', async () => {
   await loadRooms();
 });
 
-/* =========================================================
-   COPY HELPERS
-   ========================================================= */
+/* ---------- COPY ---------- */
 function copyText(text, label){
   navigator.clipboard.writeText(text).then(
     () => toast(label + ' copied', 'ok'),
-    () => toast('Copy failed — select manually', 'err')
+    () => toast('Copy failed', 'err')
   );
 }
-
 $('copyLinkBtn').addEventListener('click', () => {
   if(!lastCreatedRoom) return;
   const url = `${APP_BASE_URL}/live-session.html?room=${encodeURIComponent(lastCreatedRoom.code)}`;
   copyText(url, 'Link');
 });
-
 $('copyAllBtn').addEventListener('click', () => {
   if(!lastCreatedRoom) return;
   const url = `${APP_BASE_URL}/live-session.html?room=${encodeURIComponent(lastCreatedRoom.code)}`;
   const msg = `You're invited to ${lastCreatedRoom.code}\n\nLink: ${url}\nPasscode: ${lastCreatedRoom.passcode}`;
   copyText(msg, 'Link + passcode');
 });
-
 window.copyRoomLink = function(code){
   const r = rooms.find(x => x.code === code);
   if(!r) return;
@@ -691,14 +661,20 @@ window.copyRoomLink = function(code){
   copyText(msg, 'Link + passcode');
 };
 
-/* =========================================================
-   JOIN / END / DELETE ROOM
-   ========================================================= */
+/* ---------- ROOM ACTIONS ---------- */
 window.joinRoom = function(id){
   const r = rooms.find(x => x.id === id);
   if(!r) return;
   const url = `live-session.html?room=${encodeURIComponent(r.code)}&admin=1`;
   window.open(url, '_blank');
+};
+
+window.goLiveRoom = async function(id){
+  if(!confirm('Go live with this room again? The same link and passcode will work.')) return;
+  const { error } = await sb.from('rooms').update({ is_active: true }).eq('id', id);
+  if(error){ toast(error.message, 'err'); return; }
+  toast('Room is live again', 'ok');
+  await loadRooms();
 };
 
 window.endRoom = async function(id){
@@ -717,9 +693,7 @@ window.deleteRoom = async function(id){
   await loadRooms();
 };
 
-/* =========================================================
-   MEMBER MODAL
-   ========================================================= */
+/* ---------- MEMBER MODAL ---------- */
 function openMemberModal(mode, member){
   $('memberModal').classList.add('on');
   $('modalTitle').textContent = mode === 'edit' ? 'Edit member' : 'Add member';
@@ -810,9 +784,6 @@ window.deleteMember = async function(id){
   await loadMembers();
 };
 
-/* =========================================================
-   LOGOUT
-   ========================================================= */
 $('logoutBtn').addEventListener('click', async () => {
   await sb.auth.signOut();
   window.location.href = 'admin-login.html';
