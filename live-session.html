@@ -40,6 +40,32 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 .join-title{font-size:22px;font-weight:900;letter-spacing:-0.5px;text-align:center;}
 .join-sub{font-size:13px;color:rgba(255,255,255,0.5);text-align:center;font-weight:500;margin-bottom:4px;line-height:1.5;}
 .join-sub b{color:#ff2d78;font-weight:800;}
+
+.loading-inline{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:20px;color:rgba(255,255,255,0.6);font-size:13px;
+}
+.loading-inline .spinner-sm{
+  width:16px;height:16px;border-radius:50%;
+  border:2px solid rgba(255,255,255,0.15);border-top-color:#ff2d78;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.not-found{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:20px;text-align:center;
+}
+.not-found.on{display:flex;}
+.not-found .icon{font-size:44px;}
+.not-found .title{font-size:17px;font-weight:900;}
+.not-found .sub{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.5;max-width:280px;}
+.not-found .btn{
+  margin-top:6px;padding:11px 22px;border-radius:100px;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
+  color:#fff;font-size:13px;font-weight:700;cursor:pointer;
+}
+
 .field{display:flex;flex-direction:column;gap:6px;}
 .field label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);}
 .field input{
@@ -51,6 +77,7 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 }
 .field input:focus{border-color:#ff2d78;}
 .field input.err{border-color:#ef4444;}
+.field input:disabled{opacity:0.5;cursor:not-allowed;}
 .err-msg{font-size:12px;color:#ef4444;font-weight:600;margin-top:2px;display:none;}
 .err-msg.on{display:block;}
 .btn-primary{
@@ -61,7 +88,7 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
   transition:transform 0.15s;margin-top:6px;
 }
 .btn-primary:active{transform:scale(0.97);}
-.btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;}
 
 /* ============ JOIN CARD ============ */
 #joinCard{
@@ -330,7 +357,31 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
   100%{opacity:0;transform:translateY(-6px) scale(0.95);}
 }
 
-/* ============ ACTION BAR — TWO ROWS ============ */
+/* ============ AUDIO UNMUTE PROMPT ============ */
+.audio-prompt{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  z-index:60;display:none;
+  background:rgba(20,20,26,0.95);
+  border:1px solid rgba(255,45,120,0.4);
+  padding:16px 22px;border-radius:20px;
+  text-align:center;
+  box-shadow:0 12px 40px rgba(0,0,0,0.6),0 0 40px rgba(255,45,120,0.2);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  max-width:280px;
+}
+.audio-prompt.on{display:block;}
+.audio-prompt .ap-icon{font-size:32px;margin-bottom:8px;}
+.audio-prompt .ap-text{font-size:13px;color:rgba(255,255,255,0.85);font-weight:600;margin-bottom:12px;line-height:1.5;}
+.audio-prompt .ap-btn{
+  width:100%;padding:12px;border-radius:100px;
+  background:linear-gradient(135deg,#ff2d78,#8b5cf6);
+  border:none;color:#fff;font-size:14px;font-weight:800;
+  cursor:pointer;font-family:inherit;
+  box-shadow:0 6px 20px rgba(255,45,120,0.4);
+}
+
+/* ============ ACTION BAR ============ */
 .action-wrap{
   position:absolute;left:0;right:0;bottom:0;z-index:20;
   padding:8px 10px;
@@ -466,7 +517,6 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 }
 .loading.on{display:flex;}
 .spinner{width:36px;height:36px;border-radius:50%;border:3px solid rgba(255,255,255,0.1);border-top-color:#ff2d78;animation:spin 0.8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
 
 /* ============ FLOATING GIFTS ============ */
 .gift-float{position:absolute;font-size:26px;pointer-events:none;z-index:30;animation:giftUp 3s ease-out forwards;filter:drop-shadow(0 0 6px rgba(255,45,120,0.8));}
@@ -502,38 +552,56 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 
 <div class="app" id="app">
 
+  <!-- ============ JOIN SCREEN ============ -->
   <div class="screen on" id="joinScreen">
     <div class="join-card">
-      <div class="invite-badge">🔒 INVITE ONLY</div>
-      <div class="join-title">You're invited</div>
-      <div class="join-sub" id="joinRoomCode">Room: <b>—</b></div>
 
-      <div class="field">
-        <label>Full Name</label>
-        <input id="jName" placeholder="Enter your full name" autocomplete="name" maxlength="40">
-        <div class="err-msg" id="errName">Please enter your full name</div>
-      </div>
-      <div class="field">
-        <label>Age</label>
-        <input id="jAge" placeholder="Enter your age" inputmode="numeric" maxlength="3">
-        <div class="err-msg" id="errAge">Please enter a valid age</div>
-      </div>
-      <div class="field">
-        <label>Location</label>
-        <input id="jLocation" placeholder="Where are you from?" maxlength="40">
-        <div class="err-msg" id="errLocation">Please enter your location</div>
-      </div>
-      <div class="field">
-        <label>Passcode</label>
-        <input id="jPasscode" placeholder="Enter the room passcode" maxlength="20" autocomplete="off">
-        <div class="err-msg" id="errPasscode">Incorrect passcode</div>
+      <div id="joinLoading" class="loading-inline">
+        <div class="spinner-sm"></div>
+        <span>Loading room...</span>
       </div>
 
-      <button class="btn-primary" id="joinBtn">Join Room</button>
-      <div class="err-msg" id="joinErr" style="text-align:center;"></div>
+      <div id="joinNotFound" class="not-found">
+        <div class="icon">🔍</div>
+        <div class="title">Room not found</div>
+        <div class="sub" id="notFoundSub">This invite link doesn't match an active room. Ask the person who invited you for a new link.</div>
+        <button class="btn" onclick="window.location.href='index.html'">Back to home</button>
+      </div>
+
+      <div id="joinForm" style="display:none;flex-direction:column;gap:14px;">
+        <div class="invite-badge">🔒 INVITE ONLY</div>
+        <div class="join-title">You're invited</div>
+        <div class="join-sub" id="joinRoomCode">Room: <b>—</b></div>
+
+        <div class="field">
+          <label>Full Name</label>
+          <input id="jName" placeholder="Enter your full name" autocomplete="name" maxlength="40">
+          <div class="err-msg" id="errName">Please enter your full name</div>
+        </div>
+        <div class="field">
+          <label>Age</label>
+          <input id="jAge" placeholder="Enter your age" inputmode="numeric" maxlength="3">
+          <div class="err-msg" id="errAge">Please enter a valid age</div>
+        </div>
+        <div class="field">
+          <label>Location</label>
+          <input id="jLocation" placeholder="Where are you from?" maxlength="40">
+          <div class="err-msg" id="errLocation">Please enter your location</div>
+        </div>
+        <div class="field">
+          <label>Passcode</label>
+          <input id="jPasscode" placeholder="Enter the room passcode" maxlength="20" autocomplete="off">
+          <div class="err-msg" id="errPasscode">Incorrect passcode</div>
+        </div>
+
+        <button class="btn-primary" id="joinBtn" disabled>Join Room</button>
+        <div class="err-msg" id="joinErr" style="text-align:center;"></div>
+      </div>
+
     </div>
   </div>
 
+  <!-- ============ LIVE ROOM ============ -->
   <div class="screen" id="liveScreen">
 
     <div class="video-grid g-1" id="videoGrid"></div>
@@ -560,6 +628,12 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
     </div>
 
     <div class="join-toast-stack" id="joinToastStack"></div>
+
+    <div class="audio-prompt" id="audioPrompt">
+      <div class="ap-icon">🔊</div>
+      <div class="ap-text">Tap to enable audio so you can hear everyone</div>
+      <button class="ap-btn" id="audioPromptBtn">Enable Audio</button>
+    </div>
 
     <div class="admin-bar" id="adminBar">
       <span class="admin-label">Admin</span>
@@ -645,29 +719,15 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 const $ = id => document.getElementById(id);
 
 /* =========================================================
-   WEBRTC CONFIG — free STUN + free public TURN
+   WEBRTC CONFIG
    ========================================================= */
 const RTC_CONFIG = {
   iceServers: [
-    // Google STUN servers (free, unlimited)
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
-    // Free public TURN (openrelay — best-effort, limited but works)
-    {
-      urls: 'turn:openrelay.metered.ca:80',
-      username: 'openrelayproject',
-      credential: 'openrelayproject'
-    },
-    {
-      urls: 'turn:openrelay.metered.ca:443',
-      username: 'openrelayproject',
-      credential: 'openrelayproject'
-    },
-    {
-      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-      username: 'openrelayproject',
-      credential: 'openrelayproject'
-    }
+    { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+    { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
+    { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' }
   ],
   iceCandidatePoolSize: 4
 };
@@ -686,12 +746,11 @@ let baseViewerCount = 357, currentViewerCount = 357;
 let seenGuestTokens = new Set();
 let mouthX = 50, mouthY = 62, mouthW = 44, mouthH = 20;
 
-/* WebRTC state */
-let localStream = null;         // my camera+mic stream
+let localStream = null;
 let cameraOn = false;
 let micOn = true;
-const peers = {};               // peerId -> { pc, stream, tileEl, name, type, hasVideo }
-let myPeerId = null;            // unique per session
+const peers = {};
+let myPeerId = null;
 let myPeerName = null;
 
 /* =========================================================
@@ -712,38 +771,60 @@ function escapeHtml(s){
 }
 
 /* =========================================================
-   INIT
+   ROOM CODE NORMALIZATION
+   ========================================================= */
+function normalizeCode(raw){
+  return String(raw || '').trim().toLowerCase();
+}
+
+/* =========================================================
+   INIT — LOAD ROOM SAFELY
    ========================================================= */
 (async () => {
   loadVoices();
   speechSynthesis.onvoiceschanged = loadVoices;
 
   const params = new URLSearchParams(window.location.search);
-  const roomCode = params.get('room');
+  const rawCode = params.get('room');
+  const roomCode = normalizeCode(rawCode);
   const adminFlag = params.get('admin') === '1';
 
   if(!roomCode){
-    showNotice('❌','Invalid link','This invite link is missing a room code.', 'Go home');
+    showJoinError('Invalid link', 'This invite link is missing a room code.');
     return;
   }
 
-  const { data: roomData, error: roomErr } = await sb
+  // Try exact (now lowercase) match
+  let { data: roomData } = await sb
     .from('rooms').select('*, members(*)').eq('code', roomCode).maybeSingle();
 
-  if(roomErr || !roomData){
-    showNotice('❌','Room not found','This room does not exist.', 'Go home'); return;
+  // Fallback: case-insensitive match
+  if(!roomData){
+    const { data: fallback } = await sb
+      .from('rooms').select('*, members(*)')
+      .ilike('code', roomCode).limit(1);
+    roomData = fallback?.[0] || null;
   }
+
+  if(!roomData){
+    showJoinError('Room not found', 'This invite link doesn\'t match an active room. Ask for a new link.');
+    return;
+  }
+
   if(!roomData.is_active){
-    showNotice('⏹','Session ended','This room is no longer active.', 'Go home'); return;
+    showJoinError('Session ended', 'This room is no longer active.');
+    return;
   }
   if(roomData.expires_at && new Date(roomData.expires_at) < new Date()){
-    showNotice('⏰','Invite expired','This invite link has expired.', 'Go home'); return;
+    showJoinError('Invite expired', 'This invite link has expired.');
+    return;
   }
 
   room = roomData;
   host = roomData.members;
   scriptLines = (host?.script || '').split('\n').map(s=>s.trim()).filter(Boolean);
 
+  // Admin path
   if(adminFlag){
     const { data: { session } } = await sb.auth.getSession();
     if(!session){ window.location.href = 'admin-login.html'; return; }
@@ -761,18 +842,41 @@ function escapeHtml(s){
     return;
   }
 
-  $('joinRoomCode').innerHTML = `Room: <b>${escapeHtml(room.code)}</b>`;
+  // Guest path — show form
+  showJoinForm();
 })();
 
-function loadVoices(){
-  voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
-  if(!voices.length) voices = speechSynthesis.getVoices();
+/* =========================================================
+   JOIN SCREEN STATE
+   ========================================================= */
+function showJoinError(title, sub){
+  $('joinLoading').style.display = 'none';
+  $('joinForm').style.display = 'none';
+  $('joinNotFound').classList.add('on');
+  const t = $('joinNotFound').querySelector('.title');
+  const s = $('joinNotFound').querySelector('.sub');
+  if(t) t.textContent = title;
+  if(s) s.textContent = sub;
+}
+
+function showJoinForm(){
+  $('joinLoading').style.display = 'none';
+  $('joinNotFound').classList.remove('on');
+  $('joinForm').style.display = 'flex';
+  $('joinRoomCode').innerHTML = `Room: <b>${escapeHtml(room.code)}</b>`;
+  $('joinBtn').disabled = false;
+  $('joinBtn').textContent = 'Join Room';
 }
 
 /* =========================================================
-   JOIN FORM
+   JOIN FORM SUBMIT
    ========================================================= */
 $('joinBtn').addEventListener('click', async () => {
+  if(!room){
+    toast('Room not loaded. Refresh the page.', 'err');
+    return;
+  }
+
   const name = $('jName').value.trim();
   const age = parseInt($('jAge').value, 10);
   const location = $('jLocation').value.trim();
@@ -788,14 +892,16 @@ $('joinBtn').addEventListener('click', async () => {
 
   if(passcode !== room.passcode){
     $('errPasscode').textContent = 'Incorrect passcode';
-    $('errPasscode').classList.add('on'); return;
+    $('errPasscode').classList.add('on');
+    return;
   }
 
   const { count } = await sb.from('guests').select('*', { count: 'exact', head: true })
     .eq('room_id', room.id).eq('is_kicked', false);
   if(count >= (room.max_users || 20)){
     $('joinErr').textContent = 'This room is full.';
-    $('joinErr').classList.add('on'); return;
+    $('joinErr').classList.add('on');
+    return;
   }
 
   const btn = $('joinBtn');
@@ -811,7 +917,8 @@ $('joinBtn').addEventListener('click', async () => {
   if(guestErr){
     btn.disabled = false; btn.textContent = 'Join Room';
     $('joinErr').textContent = guestErr.message;
-    $('joinErr').classList.add('on'); return;
+    $('joinErr').classList.add('on');
+    return;
   }
 
   myPeerId = token;
@@ -825,8 +932,12 @@ $('joinBtn').addEventListener('click', async () => {
 });
 
 function clearJoinErrors(){
-  ['errName','errAge','errLocation','errPasscode','joinErr'].forEach(id => $(id).classList.remove('on'));
-  ['jName','jAge','jLocation','jPasscode'].forEach(id => $(id).classList.remove('err'));
+  ['errName','errAge','errLocation','errPasscode','joinErr'].forEach(id => {
+    const el = $(id); if(el) el.classList.remove('on');
+  });
+  ['jName','jAge','jLocation','jPasscode'].forEach(id => {
+    const el = $(id); if(el) el.classList.remove('err');
+  });
 }
 
 /* =========================================================
@@ -870,6 +981,8 @@ function showJoinCard(guestName){
    ENTER ROOM
    ========================================================= */
 function enterRoom(){
+  if(!room) return;
+
   $('joinScreen').classList.remove('on');
   $('liveScreen').classList.add('on');
   $('loadingScreen').classList.add('on');
@@ -892,42 +1005,36 @@ function enterRoom(){
   startGuestListRefresh();
   startHeartbeat();
   startViewerTicker();
-
-  // WebRTC signaling
   startSignaling();
 
-  // Announce ourselves
   broadcastSignal('join', { name: myPeerName, type: me.type });
-
-  // Periodic cleanup of our own stale signals
   setTimeout(() => cleanupOwnSignals(), 8000);
 }
 
 /* =========================================================
-   SIGNALING — Supabase Realtime on webrtc_signals table
+   SIGNALING
    ========================================================= */
 function startSignaling(){
-  // Subscribe to inserts on the webrtc_signals table for our room
   signalChannel = sb.channel('signals-' + room.id, { config: { broadcast: { self: false } } })
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'webrtc_signals', filter: `room_id=eq.${room.id}` },
       payload => handleSignal(payload.new)
-    )
-    .subscribe();
+    ).subscribe();
 }
 
 async function broadcastSignal(type, payload, toPeer){
-  await sb.from('webrtc_signals').insert({
-    room_id: room.id,
-    from_peer: myPeerId,
-    to_peer: toPeer || null,
-    signal_type: type,
-    payload: payload || {}
-  });
+  try {
+    await sb.from('webrtc_signals').insert({
+      room_id: room.id,
+      from_peer: myPeerId,
+      to_peer: toPeer || null,
+      signal_type: type,
+      payload: payload || {}
+    });
+  } catch(e){ /* silent */ }
 }
 
 async function cleanupOwnSignals(){
-  // Delete our own older signals — keep table small
   try {
     const cutoff = new Date(Date.now() - 60000).toISOString();
     await sb.from('webrtc_signals')
@@ -938,72 +1045,59 @@ async function cleanupOwnSignals(){
   } catch(e){}
 }
 
-/* =========================================================
-   HANDLE SIGNAL
-   ========================================================= */
 async function handleSignal(sig){
-  if(sig.from_peer === myPeerId) return;            // ignore our own
-  if(sig.to_peer && sig.to_peer !== myPeerId) return; // not for us
+  if(!sig || sig.from_peer === myPeerId) return;
+  if(sig.to_peer && sig.to_peer !== myPeerId) return;
 
   const fromPeer = sig.from_peer;
   const fromName = sig.payload?.name || 'Guest';
   const fromType = sig.payload?.type || 'guest';
 
-  if(sig.signal_type === 'join'){
-    // Someone new arrived. If we already have a camera on, send them an offer.
-    if(peers[fromPeer]?.pc) return;
-    if(cameraOn || localStream){
-      // We're the "polite" one with an active stream → initiate
+  try {
+    if(sig.signal_type === 'join'){
+      if(peers[fromPeer]?.pc) return;
+      if(cameraOn || localStream){
+        await ensurePeer(fromPeer, fromName, fromType);
+        const offer = await peers[fromPeer].pc.createOffer();
+        await peers[fromPeer].pc.setLocalDescription(offer);
+        await broadcastSignal('offer', { sdp: offer.sdp, name: myPeerName, type: me.type }, fromPeer);
+      }
+      return;
+    }
+    if(sig.signal_type === 'leave'){ teardownPeer(fromPeer); return; }
+    if(sig.signal_type === 'offer'){
       await ensurePeer(fromPeer, fromName, fromType);
-      const offer = await peers[fromPeer].pc.createOffer();
-      await peers[fromPeer].pc.setLocalDescription(offer);
-      await broadcastSignal('offer', { sdp: offer.sdp, name: myPeerName, type: me.type }, fromPeer);
+      const pc = peers[fromPeer].pc;
+      await pc.setRemoteDescription({ type: 'offer', sdp: sig.payload.sdp });
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      await broadcastSignal('answer', { sdp: answer.sdp }, fromPeer);
+      return;
     }
-    return;
-  }
-
-  if(sig.signal_type === 'leave'){
-    teardownPeer(fromPeer);
-    return;
-  }
-
-  if(sig.signal_type === 'offer'){
-    await ensurePeer(fromPeer, fromName, fromType);
-    const pc = peers[fromPeer].pc;
-    await pc.setRemoteDescription({ type: 'offer', sdp: sig.payload.sdp });
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-    await broadcastSignal('answer', { sdp: answer.sdp }, fromPeer);
-    return;
-  }
-
-  if(sig.signal_type === 'answer'){
-    const peer = peers[fromPeer];
-    if(!peer) return;
-    if(!peer.pc.currentRemoteDescription){
-      await peer.pc.setRemoteDescription({ type: 'answer', sdp: sig.payload.sdp });
+    if(sig.signal_type === 'answer'){
+      const peer = peers[fromPeer];
+      if(!peer) return;
+      if(!peer.pc.currentRemoteDescription){
+        await peer.pc.setRemoteDescription({ type: 'answer', sdp: sig.payload.sdp });
+      }
+      return;
     }
-    return;
-  }
-
-  if(sig.signal_type === 'ice'){
-    const peer = peers[fromPeer];
-    if(!peer) return;
-    try {
+    if(sig.signal_type === 'ice'){
+      const peer = peers[fromPeer];
+      if(!peer) return;
       if(peer.pc.remoteDescription && peer.pc.remoteDescription.type){
         await peer.pc.addIceCandidate(sig.payload.candidate);
       } else {
-        // Queue it — apply when remote description set
         peer.icePending = peer.icePending || [];
         peer.icePending.push(sig.payload.candidate);
       }
-    } catch(e){ /* ignore */ }
-    return;
-  }
+      return;
+    }
+  } catch(e){ /* silent */ }
 }
 
 /* =========================================================
-   PEER MANAGEMENT
+   PEERS
    ========================================================= */
 async function ensurePeer(peerId, name, type){
   if(peers[peerId]) return peers[peerId];
@@ -1012,33 +1106,24 @@ async function ensurePeer(peerId, name, type){
   const peer = { pc, stream: null, name, type, hasVideo: false, icePending: [] };
   peers[peerId] = peer;
 
-  // Add our local tracks if we have them
   if(localStream){
     localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
   }
 
-  // ICE candidates → broadcast
   pc.onicecandidate = e => {
-    if(e.candidate){
-      broadcastSignal('ice', { candidate: e.candidate }, peerId);
-    }
+    if(e.candidate) broadcastSignal('ice', { candidate: e.candidate }, peerId);
   };
-
-  // When remote stream arrives
   pc.ontrack = e => {
     peer.stream = e.streams[0];
     peer.hasVideo = peer.stream.getVideoTracks().length > 0;
     renderGrid();
+    attachStreamToVideo(peerId, peer.stream);
   };
-
-  // Connection state
   pc.onconnectionstatechange = () => {
     if(['failed','disconnected','closed'].includes(pc.connectionState)){
       teardownPeer(peerId);
     }
   };
-
-  // Apply any queued ICE
   pc.oniceconnectionstatechange = async () => {
     if(pc.remoteDescription && peer.icePending?.length){
       for(const c of peer.icePending){
@@ -1061,22 +1146,30 @@ function teardownPeer(peerId){
 }
 
 /* =========================================================
-   CAMERA TOGGLE — starts local stream, offers to everyone
+   CAMERA / MIC
    ========================================================= */
 $('cameraBtn').addEventListener('click', async () => {
   const btn = $('cameraBtn');
 
   if(cameraOn){
-    // Turn off
+    // Turn VIDEO off, KEEP mic audio if user had it
     if(localStream){
-      localStream.getTracks().forEach(t => t.stop());
-      localStream = null;
+      const videoTracks = localStream.getVideoTracks();
+      videoTracks.forEach(t => t.stop());
+      // Remove from localStream
+      videoTracks.forEach(t => localStream.removeTrack(t));
     }
     cameraOn = false;
     btn.classList.remove('on');
-    // Tear down all peers (they lose our video)
-    Object.keys(peers).forEach(teardownPeer);
-    broadcastSignal('leave', { name: myPeerName });
+    // Update peers: remove video from senders, keep audio
+    Object.values(peers).forEach(p => {
+      const senders = p.pc.getSenders();
+      senders.forEach(s => {
+        if(s.track && s.track.kind === 'video'){
+          try { p.pc.removeTrack(s); } catch(e){}
+        }
+      });
+    });
     renderGrid();
     toast('Camera off');
     return;
@@ -1088,40 +1181,63 @@ $('cameraBtn').addEventListener('click', async () => {
     if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
       throw new Error('Camera not supported');
     }
+    // If we already have audio, request only video. Otherwise request both.
+    const wantAudio = !localStream || localStream.getAudioTracks().length === 0;
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-      audio: true
+      audio: wantAudio
     });
-    localStream = stream;
+
+    if(localStream){
+      stream.getTracks().forEach(t => localStream.addTrack(t));
+    } else {
+      localStream = stream;
+    }
+
     cameraOn = true;
     btn.classList.remove('loading');
     btn.classList.add('on');
     renderGrid();
 
-    // Tell everyone we're live — they'll either offer or accept our offer
     await broadcastSignal('join', { name: myPeerName, type: me.type });
 
-    // Also proactively offer to everyone already in the room
     const existingPeers = await fetchExistingPeerIds();
     for(const p of existingPeers){
       if(p.id === myPeerId) continue;
       await ensurePeer(p.id, p.name, p.type);
+      // Add our local tracks if not already
+      localStream.getTracks().forEach(track => {
+        const senders = peers[p.id].pc.getSenders();
+        const already = senders.some(s => s.track === track);
+        if(!already) peers[p.id].pc.addTrack(track, localStream);
+      });
       const offer = await peers[p.id].pc.createOffer();
       await peers[p.id].pc.setLocalDescription(offer);
       await broadcastSignal('offer', { sdp: offer.sdp, name: myPeerName, type: me.type }, p.id);
     }
 
     toast('Camera on', 'ok');
+    // Try to enable audio if we got audio tracks
+    if(localStream.getAudioTracks().length > 0){
+      // It should play automatically for our own local video (it's muted)
+    }
   } catch(err){
     btn.classList.remove('loading');
     toast('Allow camera in browser settings', 'err');
   }
 });
 
-/* Build a list of peers in the room right now (from guests table + admin presence) */
+$('micBtn').addEventListener('click', () => {
+  micOn = !micOn;
+  $('micBtn').classList.toggle('on', micOn);
+  if(localStream){
+    localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+  }
+  toast(micOn ? 'Mic on' : 'Mic muted');
+});
+
 async function fetchExistingPeerIds(){
   const list = [];
-  // Guests
   const { data } = await sb.from('guests')
     .select('session_token, full_name, is_kicked')
     .eq('room_id', room.id)
@@ -1134,25 +1250,48 @@ async function fetchExistingPeerIds(){
 }
 
 /* =========================================================
-   MIC TOGGLE
+   AUDIO UNMUTE PROMPT
    ========================================================= */
-$('micBtn').addEventListener('click', () => {
-  micOn = !micOn;
-  $('micBtn').classList.toggle('on', micOn);
-  if(localStream){
-    localStream.getAudioTracks().forEach(t => t.enabled = micOn);
-  }
-  toast(micOn ? 'Mic on' : 'Mic muted');
+$('audioPromptBtn').addEventListener('click', async () => {
+  $('audioPrompt').classList.remove('on');
+  // Try to play all remote videos again
+  document.querySelectorAll('video').forEach(v => {
+    if(!v.muted){
+      v.play().catch(()=>{});
+    }
+  });
 });
 
+function checkAutoplayBlocked(videoEl){
+  if(!videoEl) return;
+  const p = videoEl.play();
+  if(p && p.catch){
+    p.catch(() => {
+      // Autoplay blocked → show prompt
+      if(!videoEl.muted){
+        $('audioPrompt').classList.add('on');
+      }
+    });
+  }
+}
+
 /* =========================================================
-   VIDEO GRID RENDER
+   VIDEO GRID
    ========================================================= */
+function attachStreamToVideo(tileId, stream){
+  const v = $('video-' + tileId);
+  if(!v) return;
+  if(v.srcObject !== stream){
+    v.srcObject = stream;
+    checkAutoplayBlocked(v);
+  }
+}
+
 function renderGrid(){
   const grid = $('videoGrid');
+  if(!grid) return;
   const tiles = [];
 
-  // 1) Host tile (always first)
   tiles.push({
     id: 'host', type: 'host',
     name: host?.name || 'Host',
@@ -1161,12 +1300,10 @@ function renderGrid(){
     )
   });
 
-  // 2) Me (if camera on)
   if(cameraOn && localStream){
-    tiles.push({ id: 'me', type: me.type, name: myPeerName, isMe: true, stream: localStream });
+    tiles.push({ id: 'me', type: me?.type || 'guest', name: myPeerName || 'You', isMe: true, stream: localStream });
   }
 
-  // 3) Every other peer with an active stream
   Object.entries(peers).forEach(([pid, p]) => {
     if(p.stream){
       tiles.push({ id: pid, type: p.type, name: p.name, stream: p.stream });
@@ -1185,7 +1322,6 @@ function renderGrid(){
           <div class="tile-label host">🎬 ${escapeHtml(t.name)}</div>
         </div>`;
     }
-    // Live video tile
     if(t.stream){
       const mirror = t.isMe ? ' mirror' : '';
       const label = t.isMe
@@ -1197,25 +1333,16 @@ function renderGrid(){
           <div class="tile-label ${t.type==='admin'?'host':''}">${label}</div>
         </div>`;
     }
-    // Placeholder (peer without video yet)
-    return `
-      <div class="tile" data-tile="${t.id}">
-        <div class="tile-placeholder">
-          <div class="ph-avatar">${escapeHtml((t.name||'?')[0])}</div>
-          <div class="ph-name">${escapeHtml(t.name)}</div>
-          <div class="ph-icon">📷 off</div>
-        </div>
-        <div class="tile-label ${t.type==='admin'?'host':''}">${escapeHtml(t.name)}</div>
-      </div>`;
+    return '';
   }).join('');
 
-  // Attach streams to video elements
   tiles.forEach(t => {
     if(t.stream){
       const v = $('video-' + t.id);
       if(v && v.srcObject !== t.stream){
         v.srcObject = t.stream;
-        v.play().catch(()=>{});
+        if(!t.isMe) checkAutoplayBlocked(v);
+        else v.play().catch(()=>{});
       }
     }
   });
@@ -1286,6 +1413,7 @@ function subscribeToMessages(){
 
 function appendMessage(m, scroll){
   const inner = $('chatInner');
+  if(!inner) return;
   const d = document.createElement('div');
   d.className = 'msg';
   if(m.sender_type === 'admin') d.classList.add('admin');
@@ -1303,46 +1431,42 @@ function appendMessage(m, scroll){
 
   if(scroll){
     const c = $('chatScroll');
-    c.scrollTop = c.scrollHeight;
+    if(c) c.scrollTop = c.scrollHeight;
   }
 }
 
-/* =========================================================
-   JOIN TOAST
-   ========================================================= */
-function showJoinToast(name){
-  if(me && me.name === name) return;
-  if(seenGuestTokens.has(name)) return;
-  seenGuestTokens.add(name);
-
-  const stack = $('joinToastStack');
-  const d = document.createElement('div');
-  d.className = 'join-toast';
-  d.innerHTML = `👋 <b>${escapeHtml(name)}</b> joined`;
-  stack.appendChild(d);
-  setTimeout(() => { if(d.parentNode) d.parentNode.removeChild(d); }, 2900);
-}
-
-/* =========================================================
-   SEND CHAT
-   ========================================================= */
 async function sendMessage(){
-  const text = $('chatInput').value.trim();
+  const input = $('chatInput');
+  const text = input.value.trim();
   if(!text) return;
-  $('chatInput').value = '';
-  await sb.from('messages').insert({
-    room_id: room.id,
-    sender_type: isAdmin ? 'admin' : 'guest',
-    sender_name: myPeerName,
-    sender_token: myPeerId,
-    text
-  });
+  input.value = '';
+
+  try {
+    const { error } = await sb.from('messages').insert({
+      room_id: room.id,
+      sender_type: isAdmin ? 'admin' : 'guest',
+      sender_name: myPeerName,
+      sender_token: myPeerId,
+      text
+    });
+    if(error){
+      toast('Message failed: ' + error.message, 'err');
+      // Fallback: show locally
+      appendMessage({
+        sender_type: isAdmin ? 'admin' : 'guest',
+        sender_name: myPeerName,
+        text
+      }, true);
+    }
+  } catch(e){
+    toast('Message failed: ' + e.message, 'err');
+  }
 }
 $('chatInput').addEventListener('keydown', e => { if(e.key === 'Enter') sendMessage(); });
 $('sendBtn').addEventListener('click', sendMessage);
 
 /* =========================================================
-   GUEST LIST + JOIN TOASTS
+   GUEST LIST
    ========================================================= */
 async function startGuestListRefresh(){
   await refreshGuestList(true);
@@ -1370,7 +1494,20 @@ async function refreshGuestList(isInitial){
   }
 
   renderDrawer();
-  renderGrid();
+}
+
+function showJoinToast(name){
+  if(me && me.name === name) return;
+  if(seenGuestTokens.has(name)) return;
+  seenGuestTokens.add(name);
+
+  const stack = $('joinToastStack');
+  if(!stack) return;
+  const d = document.createElement('div');
+  d.className = 'join-toast';
+  d.innerHTML = `👋 <b>${escapeHtml(name)}</b> joined`;
+  stack.appendChild(d);
+  setTimeout(() => { if(d.parentNode) d.parentNode.removeChild(d); }, 2900);
 }
 
 /* =========================================================
@@ -1402,9 +1539,10 @@ function paintViewerCount(){
    ========================================================= */
 function renderDrawer(){
   const list = $('drawerList');
+  if(!list) return;
   const rows = [];
   rows.push({ type:'host', name: host?.name || 'Host', role: 'Host' });
-  rows.push({ type: me.type, name: myPeerName + ' (you)', role: me.type === 'admin' ? 'Admin' : 'Guest' });
+  if(me) rows.push({ type: me.type, name: myPeerName + ' (you)', role: me.type === 'admin' ? 'Admin' : 'Guest' });
   currentGuests.forEach(g => {
     if(g.session_token === myPeerId) return;
     rows.push({ type:'guest', name: g.full_name, role: 'Guest' });
@@ -1481,7 +1619,7 @@ $('endRoomBtn').addEventListener('click', async () => {
 });
 
 /* =========================================================
-   GUEST CONTROLS
+   BUTTONS
    ========================================================= */
 $('giftBtn').addEventListener('click', () => {
   const area = $('app');
@@ -1542,6 +1680,14 @@ function showNotice(icon, title, sub, btnText){
 $('noticeBtn').addEventListener('click', () => {
   window.location.href = isAdmin ? 'admin-panel.html' : 'index.html';
 });
+
+/* =========================================================
+   VOICES
+   ========================================================= */
+function loadVoices(){
+  voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+  if(!voices.length) voices = speechSynthesis.getVoices();
+}
 
 /* =========================================================
    CLEANUP
