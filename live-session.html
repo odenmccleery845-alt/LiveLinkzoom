@@ -119,7 +119,7 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
    ========================================================= */
 #liveScreen{background:#000;}
 
-/* Video grid — top portion */
+/* Video grid */
 .video-grid{
   position:absolute;top:0;left:0;right:0;height:60%;
   z-index:5;display:grid;gap:2px;background:#000;overflow:hidden;
@@ -172,17 +172,11 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
   background:#22c55e;display:inline-block;position:relative;
 }
 .tile-label .mic.muted{background:#6b7280;}
-.tile-placeholder{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:6px;text-align:center;padding:12px;color:rgba(255,255,255,0.5);
-  font-size:11px;font-weight:600;
-}
-.tile-placeholder .icon{font-size:28px;opacity:0.5;}
 
 .video-fade{
   position:absolute;left:0;right:0;height:60%;
   top:0;z-index:6;pointer-events:none;
-  background:linear-gradient(to bottom,transparent 60%,rgba(0,0,0,0.6) 100%);
+  background:linear-gradient(to bottom,transparent 62%,rgba(0,0,0,0.7) 100%);
 }
 
 /* =========================================================
@@ -249,44 +243,79 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 .caption.on{opacity:1;}
 
 /* =========================================================
-   CHAT LAYER — sits in lower area, over bottom of video + below
+   CHAT — real TikTok-style scroll
    ========================================================= */
 .chat-layer{
   position:absolute;left:10px;right:82px;
   bottom:calc(40% + 8px);
-  display:flex;flex-direction:column;justify-content:flex-end;
-  gap:4px;max-height:38vh;overflow:hidden;
-  z-index:11;pointer-events:none;
-  mask-image:linear-gradient(to top,transparent 0%,#000 15%);
-  -webkit-mask-image:linear-gradient(to top,transparent 0%,#000 15%);
+  max-height:42vh;
+  z-index:11;
+  overflow-y:scroll;overflow-x:hidden;
+  overflow-anchor:none;
+  -webkit-overflow-scrolling:touch;
+  display:flex;flex-direction:column;
+  pointer-events:none;
+  mask-image:linear-gradient(to top,transparent 0%,#000 22%);
+  -webkit-mask-image:linear-gradient(to top,transparent 0%,#000 22%);
 }
-.msg{display:flex;gap:5px;align-items:flex-start;animation:msgIn 0.4s ease;}
+.chat-layer::-webkit-scrollbar{display:none;}
+.chat-inner{display:flex;flex-direction:column;justify-content:flex-end;min-height:100%;}
+
+.msg{
+  position:relative;display:flex;align-items:center;
+  padding:4px 6px;word-break:break-word;
+  animation:msgIn 0.35s ease;
+  flex-shrink:0;
+}
 .msg .avatar{
-  width:22px;height:22px;border-radius:50%;flex:0 0 22px;
+  width:24px;height:24px;border-radius:50%;flex:0 0 24px;
   background:linear-gradient(135deg,#ff2d78,#8b5cf6);
   display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-weight:900;color:#fff;
-  border:1px solid rgba(255,255,255,0.25);
+  font-size:10px;font-weight:900;color:#fff;
+  margin-right:8px;
   text-transform:uppercase;
+  border:1px solid rgba(255,255,255,0.2);
 }
 .msg .avatar.admin{background:linear-gradient(135deg,#f59e0b,#ef4444);}
 .msg .avatar.host{background:linear-gradient(135deg,#22c55e,#16a34a);}
 .msg .body{
   background:rgba(0,0,0,0.5);
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  padding:4px 9px;border-radius:12px;
-  font-size:11.5px;line-height:1.35;
-  max-width:100%;word-break:break-word;
+  padding:5px 10px;border-radius:14px;
+  font-size:12.5px;line-height:1.35;
+  max-width:100%;
 }
 .msg .name{color:#ff8bb8;font-weight:700;margin-right:4px;}
 .msg.admin .name{color:#fbbf24;}
 .msg.host .name{color:#4ade80;}
-.msg.system .body{
-  background:rgba(255,45,120,0.22);
-  color:#ff8bb8;font-weight:700;font-size:10.5px;
-  padding:3px 9px;border-radius:100px;
+@keyframes msgIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* =========================================================
+   JOIN TOAST — flashes then disappears, NOT in chat
+   ========================================================= */
+.join-toast-stack{
+  position:absolute;left:10px;bottom:calc(42% + 6px);
+  z-index:14;display:flex;flex-direction:column-reverse;gap:4px;
+  pointer-events:none;
 }
-@keyframes msgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.join-toast{
+  display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,rgba(255,45,120,0.85),rgba(139,92,246,0.85));
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:5px 12px;border-radius:100px;
+  font-size:11.5px;font-weight:700;
+  color:#fff;
+  box-shadow:0 4px 16px rgba(255,45,120,0.4);
+  max-width:fit-content;
+  opacity:0;transform:translateY(8px);
+  animation:joinToast 2.8s ease forwards;
+}
+@keyframes joinToast{
+  0%{opacity:0;transform:translateY(8px) scale(0.9);}
+  12%{opacity:1;transform:translateY(0) scale(1);}
+  75%{opacity:1;transform:translateY(0) scale(1);}
+  100%{opacity:0;transform:translateY(-6px) scale(0.95);}
+}
 
 /* =========================================================
    ACTION BAR
@@ -339,6 +368,12 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
   animation:cameraPulse 1s infinite;
 }
 @keyframes cameraPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+.icon-btn.mic{background:rgba(255,255,255,0.1);}
+.icon-btn.mic.on{
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  border-color:transparent;
+  box-shadow:0 0 16px rgba(34,197,94,0.5);
+}
 
 /* =========================================================
    ADMIN BAR
@@ -450,7 +485,7 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 }
 
 /* =========================================================
-   TOAST
+   TOAST (feedback notifications)
    ========================================================= */
 .toast{
   position:absolute;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);
@@ -469,9 +504,7 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 
 <div class="app" id="app">
 
-  <!-- =========================================================
-       JOIN FORM
-       ========================================================= -->
+  <!-- ============ JOIN FORM ============ -->
   <div class="screen on" id="joinScreen">
     <div class="join-card">
       <div class="invite-badge">🔒 INVITE ONLY</div>
@@ -504,15 +537,12 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
     </div>
   </div>
 
-  <!-- =========================================================
-       LIVE ROOM
-       ========================================================= -->
+  <!-- ============ LIVE ROOM ============ -->
   <div class="screen" id="liveScreen">
 
     <div class="video-grid g-1" id="videoGrid"></div>
     <div class="video-fade"></div>
 
-    <!-- TOP BAR -->
     <div class="top-bar">
       <div class="tb-left">
         <div class="live-badge"><span class="dot"></span>LIVE</div>
@@ -530,9 +560,16 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
     </div>
 
     <div class="caption" id="caption"></div>
-    <div class="chat-layer" id="chatScroll"></div>
 
-    <!-- ADMIN BAR -->
+    <!-- Chat with proper scroll behavior -->
+    <div class="chat-layer" id="chatScroll">
+      <div class="chat-inner" id="chatInner"></div>
+    </div>
+
+    <!-- Join toasts — flash and disappear -->
+    <div class="join-toast-stack" id="joinToastStack"></div>
+
+    <!-- Admin bar -->
     <div class="admin-bar" id="adminBar">
       <span class="admin-label">Admin</span>
       <button class="admin-btn speak" id="speakBtn">🎤 Speak next</button>
@@ -540,9 +577,10 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
       <button class="admin-btn end" id="endRoomBtn">⏹ End</button>
     </div>
 
-    <!-- ACTION BAR -->
+    <!-- Action bar with mic + camera -->
     <div class="action-bar">
       <input class="action-input" id="chatInput" placeholder="Say something..." maxlength="200">
+      <button class="icon-btn mic on" id="micBtn" title="Toggle mic">🎤</button>
       <button class="icon-btn camera" id="cameraBtn" title="Toggle camera">📷</button>
       <button class="icon-btn gift" id="giftBtn">
         🎁
@@ -551,7 +589,7 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
       <button class="icon-btn" id="likeBtn">❤️</button>
     </div>
 
-    <!-- VIEWER DRAWER -->
+    <!-- Viewer drawer -->
     <div class="viewer-drawer" id="viewerDrawer">
       <div class="drawer-handle"></div>
       <div class="drawer-head">
@@ -564,7 +602,7 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
       <div class="drawer-list" id="drawerList"></div>
     </div>
 
-    <!-- JOIN CARD -->
+    <!-- Join card -->
     <div id="joinCard">
       <div class="jc-card">
         <div class="jc-avatar-wrap">
@@ -585,7 +623,7 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
       </div>
     </div>
 
-    <!-- NOTICE -->
+    <!-- Notice -->
     <div class="notice" id="noticeScreen">
       <div class="notice-icon" id="noticeIcon">⏹</div>
       <div class="notice-title" id="noticeTitle">Session ended</div>
@@ -593,75 +631,53 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
       <button class="notice-btn" id="noticeBtn">Back to home</button>
     </div>
 
-    <!-- LOADING -->
     <div class="loading" id="loadingScreen">
       <div class="spinner"></div>
       <div>Joining room...</div>
     </div>
 
-    <!-- TOAST -->
     <div class="toast" id="toast"></div>
-
   </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* =========================================================
-   CONFIG
-   ========================================================= */
 const SUPABASE_URL  = 'https://isoautwpyzaquawyzbbv.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb2F1dHdweXphcXVhd3l6YmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NjYyMzUsImV4cCI6MjEwNTA0MjIzNX0.GpdO1B6aR_oOfwmnDbs3kBLvUVkRsZhJMGhcIXJx7RQ';
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 const $ = id => document.getElementById(id);
 
-/* =========================================================
-   STATE
-   ========================================================= */
-let room = null;
-let host = null;
-let isAdmin = false;
-let me = null;
-let scriptLines = [];
-let scriptIndex = 0;
-let realtimeChannel = null;
-let statusChannel = null;
-let guestPollTimer = null;
-let heartbeatTimer = null;
-let viewerTickTimer = null;
+let room = null, host = null, isAdmin = false, me = null;
+let scriptLines = [], scriptIndex = 0;
+let realtimeChannel = null, statusChannel = null;
+let guestPollTimer = null, heartbeatTimer = null, viewerTickTimer = null;
 let currentGuests = [];
-let giftCount = 0;
-let pendingGreet = null;
+let giftCount = 0, pendingGreet = null;
 let voices = [];
-let myCameraStream = null;
-let myCameraOn = false;
-let baseViewerCount = 357;
-let currentViewerCount = 357;
+let myCameraStream = null, myCameraOn = false;
+let myMicOn = true;
+let baseViewerCount = 357, currentViewerCount = 357;
+let seenGuestTokens = new Set();
 let mouthX = 50, mouthY = 62, mouthW = 44, mouthH = 20;
 
-/* =========================================================
-   TOAST
-   ========================================================= */
+/* Toast */
 let toastTimer = null;
 function toast(msg, type='ok'){
   const t = $('toast');
   t.textContent = msg;
   t.className = 'toast on ' + type;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('on'), 2400);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 2200);
 }
-
 function escapeHtml(s){
   return String(s || '').replace(/[&<>"']/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[c]));
 }
 
-/* =========================================================
-   INIT
-   ========================================================= */
+/* ============ INIT ============ */
 (async () => {
   loadVoices();
   speechSynthesis.onvoiceschanged = loadVoices;
@@ -676,22 +692,16 @@ function escapeHtml(s){
   }
 
   const { data: roomData, error: roomErr } = await sb
-    .from('rooms')
-    .select('*, members(*)')
-    .eq('code', roomCode)
-    .maybeSingle();
+    .from('rooms').select('*, members(*)').eq('code', roomCode).maybeSingle();
 
   if(roomErr || !roomData){
-    showNotice('❌','Room not found','This room does not exist or the invite link is wrong.', 'Go home');
-    return;
+    showNotice('❌','Room not found','This room does not exist.', 'Go home'); return;
   }
   if(!roomData.is_active){
-    showNotice('⏹','Session ended','This room is no longer active.', 'Go home');
-    return;
+    showNotice('⏹','Session ended','This room is no longer active.', 'Go home'); return;
   }
   if(roomData.expires_at && new Date(roomData.expires_at) < new Date()){
-    showNotice('⏰','Invite expired','This invite link has expired.', 'Go home');
-    return;
+    showNotice('⏰','Invite expired','This invite link has expired.', 'Go home'); return;
   }
 
   room = roomData;
@@ -705,8 +715,7 @@ function escapeHtml(s){
       .select('role, full_name').eq('id', session.user.id).maybeSingle();
     if(!profile || profile.role !== 'admin'){
       await sb.auth.signOut();
-      window.location.href = 'admin-login.html';
-      return;
+      window.location.href = 'admin-login.html'; return;
     }
     isAdmin = true;
     me = { type: 'admin', name: profile.full_name || 'Admin', token: 'admin-' + session.user.id, id: session.user.id };
@@ -722,9 +731,7 @@ function loadVoices(){
   if(!voices.length) voices = speechSynthesis.getVoices();
 }
 
-/* =========================================================
-   JOIN FORM
-   ========================================================= */
+/* ============ JOIN FORM ============ */
 $('joinBtn').addEventListener('click', async () => {
   const name = $('jName').value.trim();
   const age = parseInt($('jAge').value, 10);
@@ -741,18 +748,14 @@ $('joinBtn').addEventListener('click', async () => {
 
   if(passcode !== room.passcode){
     $('errPasscode').textContent = 'Incorrect passcode';
-    $('errPasscode').classList.add('on');
-    return;
+    $('errPasscode').classList.add('on'); return;
   }
 
-  const { count } = await sb.from('guests')
-    .select('*', { count: 'exact', head: true })
+  const { count } = await sb.from('guests').select('*', { count: 'exact', head: true })
     .eq('room_id', room.id).eq('is_kicked', false);
-
   if(count >= (room.max_users || 20)){
-    $('joinErr').textContent = 'This room is full. Try again later.';
-    $('joinErr').classList.add('on');
-    return;
+    $('joinErr').textContent = 'This room is full.';
+    $('joinErr').classList.add('on'); return;
   }
 
   const btn = $('joinBtn');
@@ -768,14 +771,14 @@ $('joinBtn').addEventListener('click', async () => {
   if(guestErr){
     btn.disabled = false; btn.textContent = 'Join Room';
     $('joinErr').textContent = guestErr.message;
-    $('joinErr').classList.add('on');
-    return;
+    $('joinErr').classList.add('on'); return;
   }
 
   me = { type: 'guest', name, token, id: guest.id };
   sessionStorage.setItem('ll_guest_token', token);
   pendingGreet = name;
 
+  // Chat message (permanent)
   await sb.from('messages').insert({
     room_id: room.id, sender_type: 'system',
     sender_name: 'System', text: `${name} joined`
@@ -790,9 +793,7 @@ function clearJoinErrors(){
   ['jName','jAge','jLocation','jPasscode'].forEach(id => $(id).classList.remove('err'));
 }
 
-/* =========================================================
-   JOIN CARD
-   ========================================================= */
+/* ============ JOIN CARD ============ */
 function showJoinCard(guestName){
   $('joinScreen').classList.remove('on');
   $('liveScreen').classList.add('on');
@@ -827,15 +828,14 @@ function showJoinCard(guestName){
   }, 3500);
 }
 
-/* =========================================================
-   ENTER ROOM
-   ========================================================= */
+/* ============ ENTER ROOM ============ */
 function enterRoom(){
   $('joinScreen').classList.remove('on');
   $('liveScreen').classList.add('on');
   $('loadingScreen').classList.add('on');
 
   if(isAdmin) $('adminBar').classList.add('on');
+  if(myMicOn) $('micBtn').classList.add('on');
 
   renderGrid();
 
@@ -853,14 +853,11 @@ function enterRoom(){
   startViewerTicker();
 }
 
-/* =========================================================
-   VIDEO GRID — only host + users with camera on
-   ========================================================= */
+/* ============ VIDEO GRID ============ */
 function renderGrid(){
   const grid = $('videoGrid');
   const tiles = [];
 
-  // HOST
   tiles.push({
     id: 'host', type: 'host',
     name: host?.name || 'Host',
@@ -869,11 +866,9 @@ function renderGrid(){
     )
   });
 
-  // ME — only if camera on
+  // My tile — only if camera on
   if(myCameraOn && me){
-    tiles.push({
-      id: 'me', type: me.type, name: me.name, cameraOn: true
-    });
+    tiles.push({ id: 'me', type: me.type, name: me.name, cameraOn: true });
   }
 
   const n = tiles.length;
@@ -889,10 +884,12 @@ function renderGrid(){
         </div>`;
     }
     if(t.id === 'me'){
+      const micIcon = myMicOn ? '' : ' muted';
+      const micClass = myMicOn ? '' : ' muted';
       return `
         <div class="tile" data-tile="me">
           <video class="tile-video" id="myVideo" autoplay playsinline muted></video>
-          <div class="tile-label ${t.type==='admin'?'host':''}">${t.type==='admin'?'👑':'👤'} ${escapeHtml(t.name)} (you)</div>
+          <div class="tile-label ${t.type==='admin'?'host':''}">${t.type==='admin'?'👑':'👤'} ${escapeHtml(t.name)} (you) <span class="mic${micClass}"></span></div>
         </div>`;
     }
   }).join('');
@@ -915,18 +912,13 @@ function positionMouth(){
   mouth.style.height = mouthH + 'px';
 }
 
-/* =========================================================
-   CAMERA TOGGLE — instant feedback
-   ========================================================= */
+/* ============ CAMERA TOGGLE ============ */
 $('cameraBtn').addEventListener('click', async () => {
   const btn = $('cameraBtn');
 
-  // TURN OFF
   if(myCameraOn){
-    if(myCameraStream){
-      myCameraStream.getTracks().forEach(t => t.stop());
-      myCameraStream = null;
-    }
+    if(myCameraStream) myCameraStream.getTracks().forEach(t => t.stop());
+    myCameraStream = null;
     myCameraOn = false;
     btn.classList.remove('on');
     renderGrid();
@@ -934,13 +926,11 @@ $('cameraBtn').addEventListener('click', async () => {
     return;
   }
 
-  // TURN ON — instant visual feedback
   btn.classList.add('loading');
-  toast('Requesting camera...');
 
   try {
     if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-      throw new Error('Camera not supported on this browser');
+      throw new Error('Camera not supported');
     }
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
@@ -954,17 +944,22 @@ $('cameraBtn').addEventListener('click', async () => {
     toast('Camera on', 'ok');
   } catch(err){
     btn.classList.remove('loading');
-    toast('Camera denied — allow in browser settings', 'err');
+    toast('Allow camera in browser settings', 'err');
   }
 });
 
-/* =========================================================
-   TALKING
-   ========================================================= */
+/* ============ MIC TOGGLE (visual only) ============ */
+$('micBtn').addEventListener('click', () => {
+  myMicOn = !myMicOn;
+  $('micBtn').classList.toggle('on', myMicOn);
+  toast(myMicOn ? 'Mic on' : 'Mic muted');
+  if(myCameraOn) renderGrid();
+});
+
+/* ============ TALKING ============ */
 function speakText(text){
   if(!text) return;
-  const mouth = $('mouth');
-  const cap = $('caption');
+  const mouth = $('mouth'), cap = $('caption');
   if(!mouth || !cap) return;
 
   cap.textContent = text;
@@ -983,15 +978,12 @@ function speakText(text){
   speechSynthesis.speak(u);
 }
 
-/* =========================================================
-   CHAT
-   ========================================================= */
+/* ============ CHAT ============ */
 async function loadRecentMessages(){
-  const { data } = await sb.from('messages')
-    .select('*').eq('room_id', room.id)
+  const { data } = await sb.from('messages').select('*').eq('room_id', room.id)
     .order('created_at', { ascending: false }).limit(30);
   if(data){
-    data.reverse().forEach(m => appendMessage(m));
+    data.reverse().forEach(m => appendMessage(m, false));
   }
 }
 
@@ -999,31 +991,60 @@ function subscribeToMessages(){
   realtimeChannel = sb.channel('room-' + room.id)
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'messages', filter: `room_id=eq.${room.id}` },
-      payload => appendMessage(payload.new)
+      payload => {
+        const m = payload.new;
+        // If it's a system "joined" message, show flash toast instead of permanent chat
+        if(m.sender_type === 'system' && /joined$/i.test(m.text || '')){
+          const name = (m.text || '').replace(/\s*joined\s*$/i, '').trim();
+          if(name) showJoinToast(name);
+          return;
+        }
+        appendMessage(m, true);
+      }
     ).subscribe();
 }
 
-function appendMessage(m){
-  const c = $('chatScroll');
+function appendMessage(m, scroll){
+  const inner = $('chatInner');
   const d = document.createElement('div');
   d.className = 'msg';
   if(m.sender_type === 'system'){
-    d.className = 'msg system';
-    d.innerHTML = `<div class="body">${escapeHtml(m.text)}</div>`;
+    d.className = 'msg';
   } else {
     if(m.sender_type === 'admin') d.classList.add('admin');
     if(m.sender_type === 'host') d.classList.add('host');
-    const initial = (m.sender_name || '?')[0];
-    const avClass = m.sender_type === 'admin' ? 'avatar admin'
-                  : m.sender_type === 'host' ? 'avatar host' : 'avatar';
-    d.innerHTML = `
-      <div class="${avClass}">${escapeHtml(initial)}</div>
-      <div class="body"><span class="name">${escapeHtml(m.sender_name || 'Guest')}</span>${escapeHtml(m.text)}</div>`;
   }
-  c.appendChild(d);
-  while(c.children.length > 8) c.removeChild(c.firstChild);
+  const initial = (m.sender_name || '?')[0];
+  const avClass = m.sender_type === 'admin' ? 'avatar admin'
+                : m.sender_type === 'host' ? 'avatar host' : 'avatar';
+  d.innerHTML = `
+    <div class="${avClass}">${escapeHtml(initial)}</div>
+    <div class="body"><span class="name">${escapeHtml(m.sender_name || 'Guest')}</span>${escapeHtml(m.text)}</div>`;
+  inner.appendChild(d);
+
+  // Keep only last 40 for memory
+  while(inner.children.length > 40) inner.removeChild(inner.firstChild);
+
+  if(scroll){
+    const c = $('chatScroll');
+    c.scrollTop = c.scrollHeight;
+  }
 }
 
+/* ============ JOIN TOAST (flash + disappear) ============ */
+function showJoinToast(name){
+  if(seenGuestTokens.has(name)) return;
+  seenGuestTokens.add(name);
+
+  const stack = $('joinToastStack');
+  const d = document.createElement('div');
+  d.className = 'join-toast';
+  d.innerHTML = `👋 <b>${escapeHtml(name)}</b> joined`;
+  stack.appendChild(d);
+  setTimeout(() => { if(d.parentNode) d.parentNode.removeChild(d); }, 2900);
+}
+
+/* ============ SEND CHAT ============ */
 $('chatInput').addEventListener('keydown', async e => {
   if(e.key !== 'Enter') return;
   const text = e.target.value.trim();
@@ -1038,9 +1059,7 @@ $('chatInput').addEventListener('keydown', async e => {
   });
 });
 
-/* =========================================================
-   GUEST LIST
-   ========================================================= */
+/* ============ GUEST LIST ============ */
 async function startGuestListRefresh(){
   await refreshGuestList();
   guestPollTimer = setInterval(refreshGuestList, 4000);
@@ -1050,60 +1069,48 @@ async function refreshGuestList(){
   const { data } = await sb.from('guests')
     .select('id, full_name, is_kicked, session_token')
     .eq('room_id', room.id).eq('is_kicked', false);
+  const previous = currentGuests.map(g => g.session_token);
   currentGuests = data || [];
+
+  // New guests since last check → flash toast
+  currentGuests.forEach(g => {
+    if(!previous.includes(g.session_token) && g.session_token !== me?.token){
+      showJoinToast(g.full_name);
+    }
+  });
+
   renderDrawer();
 }
 
-/* =========================================================
-   VIEWER COUNT — animated tick
-   ========================================================= */
+/* ============ VIEWER TICKER ============ */
 function startViewerTicker(){
-  // Wait a beat then start ticking
   setTimeout(() => {
-    // seed near 357
     currentViewerCount = baseViewerCount;
     paintViewerCount();
-
     viewerTickTimer = setInterval(() => {
-      // Occasionally jump more (people joining/leaving)
       const r = Math.random();
       let delta;
-      if(r < 0.65) delta = Math.floor(Math.random() * 5);        // +0..4
-      else if(r < 0.85) delta = -Math.floor(Math.random() * 4);   // -0..3
-      else if(r < 0.95) delta = Math.floor(Math.random() * 12);   // +0..11 jump
-      else delta = Math.floor(Math.random() * 6) - 3;             // -3..2
-
+      if(r < 0.65) delta = Math.floor(Math.random() * 5);
+      else if(r < 0.85) delta = -Math.floor(Math.random() * 4);
+      else if(r < 0.95) delta = Math.floor(Math.random() * 12);
+      else delta = Math.floor(Math.random() * 6) - 3;
       currentViewerCount += delta;
-
-      // Never go below 357
-      if(currentViewerCount < 357){
-        currentViewerCount = 357 + Math.floor(Math.random() * 4);
-      }
-      // Keep it growing slowly so it doesn't creep down forever
-      if(currentViewerCount < baseViewerCount + 5){
-        currentViewerCount += Math.floor(Math.random() * 3);
-      }
-
+      if(currentViewerCount < 357) currentViewerCount = 357 + Math.floor(Math.random() * 4);
       paintViewerCount();
     }, 1400);
   }, 800);
 }
-
 function paintViewerCount(){
   $('viewerCount').textContent = currentViewerCount;
   $('jcViewers').textContent = currentViewerCount;
 }
 
-/* =========================================================
-   VIEWER DRAWER
-   ========================================================= */
+/* ============ VIEWER DRAWER ============ */
 function renderDrawer(){
   const list = $('drawerList');
   const rows = [];
   rows.push({ type:'host', name: host?.name || 'Host', role: 'Host' });
-  if(me){
-    rows.push({ type: me.type, name: me.name + ' (you)', role: me.type === 'admin' ? 'Admin' : 'Guest' });
-  }
+  if(me) rows.push({ type: me.type, name: me.name + ' (you)', role: me.type === 'admin' ? 'Admin' : 'Guest' });
   currentGuests.forEach(g => {
     if(me?.token === g.session_token) return;
     rows.push({ type:'guest', name: g.full_name, role: 'Guest' });
@@ -1130,21 +1137,16 @@ document.addEventListener('click', e => {
   drawer.classList.remove('on');
 });
 
-/* =========================================================
-   HEARTBEAT
-   ========================================================= */
+/* ============ HEARTBEAT ============ */
 function startHeartbeat(){
   if(!me || me.type !== 'guest') return;
   heartbeatTimer = setInterval(async () => {
-    await sb.from('guests')
-      .update({ last_seen: new Date().toISOString() })
+    await sb.from('guests').update({ last_seen: new Date().toISOString() })
       .eq('session_token', me.token);
   }, 30000);
 }
 
-/* =========================================================
-   ROOM STATUS
-   ========================================================= */
+/* ============ ROOM STATUS ============ */
 function subscribeToRoomStatus(){
   statusChannel = sb.channel('room-status-' + room.id)
     .on('postgres_changes',
@@ -1157,16 +1159,13 @@ function subscribeToRoomStatus(){
     ).subscribe();
 }
 
-/* =========================================================
-   ADMIN CONTROLS
-   ========================================================= */
+/* ============ ADMIN ============ */
 $('speakBtn').addEventListener('click', () => {
   if(!isAdmin) return;
   if(!scriptLines.length){ speakText('This host has no script yet.'); return; }
   speakText(scriptLines[scriptIndex % scriptLines.length]);
   scriptIndex++;
 });
-
 $('greetBtn').addEventListener('click', () => {
   if(!isAdmin) return;
   if(!pendingGreet){ speakText('Hi everyone, welcome to the room.'); return; }
@@ -1174,7 +1173,6 @@ $('greetBtn').addEventListener('click', () => {
   pendingGreet = null;
   speakText(`Hi ${name}, welcome to the room.`);
 });
-
 $('endRoomBtn').addEventListener('click', async () => {
   if(!isAdmin) return;
   if(!confirm('End this room for everyone?')) return;
@@ -1182,9 +1180,7 @@ $('endRoomBtn').addEventListener('click', async () => {
   showNotice('⏹','Session ended','You ended this session.', 'Back to admin');
 });
 
-/* =========================================================
-   GUEST CONTROLS
-   ========================================================= */
+/* ============ GUEST CONTROLS ============ */
 $('giftBtn').addEventListener('click', () => {
   const area = $('app');
   for(let i=0;i<8;i++){
@@ -1201,7 +1197,6 @@ $('giftBtn').addEventListener('click', () => {
   giftCount++;
   $('giftCount').textContent = giftCount;
 });
-
 $('likeBtn').addEventListener('click', () => {
   const area = $('app');
   for(let i=0;i<5;i++){
@@ -1216,24 +1211,16 @@ $('likeBtn').addEventListener('click', () => {
     }, i*70);
   }
 });
-
-$('settingsBtn').addEventListener('click', () => {
-  toast('Settings coming soon');
-});
-
+$('settingsBtn').addEventListener('click', () => toast('Settings coming soon'));
 $('closeBtn').addEventListener('click', () => {
   if(isAdmin){
-    if(confirm('Leave this room? It stays live for others.')){
-      window.location.href = 'admin-panel.html';
-    }
+    if(confirm('Leave this room? It stays live for others.')) window.location.href = 'admin-panel.html';
   } else {
     if(confirm('Leave this room?')) window.location.href = 'index.html';
   }
 });
 
-/* =========================================================
-   NOTICE
-   ========================================================= */
+/* ============ NOTICE ============ */
 function showNotice(icon, title, sub, btnText){
   $('noticeIcon').textContent = icon;
   $('noticeTitle').textContent = title;
@@ -1246,9 +1233,7 @@ $('noticeBtn').addEventListener('click', () => {
   window.location.href = isAdmin ? 'admin-panel.html' : 'index.html';
 });
 
-/* =========================================================
-   CLEANUP
-   ========================================================= */
+/* ============ CLEANUP ============ */
 window.addEventListener('beforeunload', () => {
   speechSynthesis.cancel();
   clearInterval(guestPollTimer);
