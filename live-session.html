@@ -175,14 +175,8 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 
 .tile{position:relative;background:#0a0000;overflow:hidden;display:flex;align-items:center;justify-content:center;}
 
-/* ================= HOST STAGE (for talking image) ================= */
-.host-stage{
-  position:relative;
-  width:100%;height:100%;
-  overflow:hidden;
-}
+.host-stage{position:relative;width:100%;height:100%;overflow:hidden;}
 
-/* Wrapper that handles the head bob — separate from image so warp/jaw can stack */
 .host-bob{
   position:absolute;inset:0;
   animation:bob 3.8s ease-in-out infinite;
@@ -196,7 +190,6 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
   75%{transform:translate(1px,-2px) rotate(0.4deg);}
 }
 
-/* The host photo */
 .host-photo{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
@@ -205,18 +198,16 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
   display:block;
 }
 
-/* Jaw warp container — clips bottom of the image and shifts it down when talking */
 .jaw-wrap{
   position:absolute;
   left:0;right:0;bottom:0;
-  height:38%;                 /* only bottom 38% of the image */
+  height:38%;
   overflow:hidden;
   pointer-events:none;
   z-index:2;
   transform:translateY(0);
   transition:transform 0.06s linear;
   will-change:transform;
-  /* Soft fade so the top edge of the warp blends into the face */
   -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 22%);
   mask-image:linear-gradient(to bottom,transparent 0%,#000 22%);
 }
@@ -224,25 +215,17 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
   position:absolute;
   top:auto;left:50%;
   transform:translateX(-50%);
-  /* The clone is the same image but offset so it lines up with the original */
   max-width:none;
 }
-.jaw-wrap.talking{
-  animation:jawTalk 0.16s steps(2,end) infinite;
-}
-@keyframes jawTalk{
-  0%{transform:translateY(0);}
-  100%{transform:translateY(6px);}
-}
+.jaw-wrap.talking{animation:jawTalk 0.16s steps(2,end) infinite;}
+@keyframes jawTalk{0%{transform:translateY(0);}100%{transform:translateY(6px);}}
 
-/* Mouth overlay — soft, blurred, natural dark opening */
 .mouth{
   position:absolute;
   z-index:3;
   pointer-events:none;
   opacity:0;
   transition:opacity 0.18s ease;
-  /* Soft radial opening */
   background:
     radial-gradient(ellipse at 50% 40%,
       rgba(20,2,5,0.95) 0%,
@@ -257,37 +240,21 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 }
 .mouth.on{opacity:1;}
 
-/* Lip line — thin darker line above the mouth to sell the "lips parting" illusion */
 .lip-line{
-  position:absolute;
-  z-index:3;
-  pointer-events:none;
-  opacity:0;
+  position:absolute;z-index:3;pointer-events:none;opacity:0;
   transition:opacity 0.18s ease;
-  background:linear-gradient(to bottom,
-    rgba(0,0,0,0.7) 0%,
-    rgba(0,0,0,0.15) 50%,
-    transparent 100%);
-  height:3px;
-  border-radius:50%;
-  filter:blur(1.5px);
+  background:linear-gradient(to bottom,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.15) 50%,transparent 100%);
+  height:3px;border-radius:50%;filter:blur(1.5px);
 }
 .lip-line.on{opacity:1;}
 
-/* Speaking animation for the mouth — realistic open/close */
-.mouth.talking{
-  animation:mouthOpenClose 0.16s steps(2,end) infinite;
-}
+.mouth.talking{animation:mouthOpenClose 0.16s steps(2,end) infinite;}
 @keyframes mouthOpenClose{
   0%  {transform:scale(0.35,0.18);}
   50% {transform:scale(1.05,1.0);}
   100%{transform:scale(0.35,0.18);}
 }
-
-/* Softer vowel variant — used during speech to vary shape */
-.mouth.talking-vowel{
-  animation:mouthVowel 0.34s ease-in-out infinite;
-}
+.mouth.talking-vowel{animation:mouthVowel 0.34s ease-in-out infinite;}
 @keyframes mouthVowel{
   0%  {transform:scale(0.7,0.5);}
   30% {transform:scale(1.1,0.95);}
@@ -295,15 +262,9 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
   100%{transform:scale(0.7,0.5);}
 }
 
-/* Eyelid overlay — subtle dark bar over each eye, blinks occasionally */
 .eyelid{
-  position:absolute;
-  z-index:4;
-  pointer-events:none;
-  background:linear-gradient(to bottom,
-    rgba(0,0,0,0.85) 0%,
-    rgba(0,0,0,0.4) 60%,
-    transparent 100%);
+  position:absolute;z-index:4;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.4) 60%,transparent 100%);
   border-radius:50% 50% 40% 40% / 70% 70% 30% 30%;
   filter:blur(1.5px);
   transform-origin:top center;
@@ -312,8 +273,6 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 }
 .eyelid.blink{transform:scaleY(1);}
 
-.tile-img{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:100%;max-height:100%;object-fit:contain;width:100%;height:100%;}
-.tile-img.bob{animation:bob 3.6s ease-in-out infinite;}
 .tile-video{width:100%;height:100%;object-fit:cover;background:#000;}
 .tile-video.mirror{transform:scaleX(-1);}
 
@@ -452,10 +411,9 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
   100%{opacity:0;transform:translateY(-6px) scale(0.95);}
 }
 
-/* ============ AUDIO UNMUTE PROMPT ============ */
+/* ============ AUDIO PROMPT ============ */
 .audio-prompt{
-  position:absolute;left:50%;top:50%;
-  transform:translate(-50%,-50%);
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   z-index:60;display:none;
   background:rgba(20,20,26,0.95);
   border:1px solid rgba(255,45,120,0.4);
@@ -559,8 +517,7 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 /* ============ VIEWER DRAWER ============ */
 .viewer-drawer{
   position:absolute;left:0;right:0;bottom:0;z-index:90;
-  max-height:60vh;
-  background:#0e0e14;
+  max-height:60vh;background:#0e0e14;
   border-top-left-radius:24px;border-top-right-radius:24px;
   transform:translateY(100%);
   transition:transform 0.3s ease;
@@ -802,13 +759,15 @@ html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-syste
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* =========================================================
+   CONFIG — anon key must be IDENTICAL to admin-panel.html
+   ========================================================= */
 const SUPABASE_URL  = 'https://isoautwpyzaquawyzbbv.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb2F1dHdweXphcXVhd3l6YmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NjYyMzUsImV4cCI6MjEwNTQwNDIyMzV9.GpdO1B6aR_oOfwmnDbs3kBLvUVkRsZhJMGhcIXJx7RQ';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb2F1dHdweXphcXVhd3l6YmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NjYyMzUsImV4cCI6MjEwNTA0MjIzNX0.GpdO1B6aR_oOfwmnDbs3kBLvUVkRsZhJMGhcIXJx7RQ';
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 const $ = id => document.getElementById(id);
 
-/* ============ WEBRTC CONFIG ============ */
 const RTC_CONFIG = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
@@ -820,7 +779,6 @@ const RTC_CONFIG = {
   iceCandidatePoolSize: 4
 };
 
-/* ============ STATE ============ */
 let room = null, host = null, isAdmin = false, me = null;
 let scriptLines = [], scriptIndex = 0;
 let realtimeChannel = null, statusChannel = null, signalChannel = null;
@@ -831,7 +789,6 @@ let voices = [];
 let baseViewerCount = 357, currentViewerCount = 357;
 let seenGuestTokens = new Set();
 
-/* Host animation state */
 let blinkTimer = null;
 let speakingTimeout = null;
 let currentMouthEl = null;
@@ -840,7 +797,6 @@ let currentJawEl = null;
 let currentEyelidL = null;
 let currentEyelidR = null;
 
-/* WebRTC */
 let localStream = null;
 let cameraOn = false;
 let micOn = true;
@@ -848,10 +804,10 @@ const peers = {};
 let myPeerId = null;
 let myPeerName = null;
 
-/* ============ TOAST ============ */
 let toastTimer = null;
 function toast(msg, type='ok'){
   const t = $('toast');
+  if(!t) return;
   t.textContent = msg;
   t.className = 'toast on ' + type;
   clearTimeout(toastTimer);
@@ -881,16 +837,28 @@ function normalizeCode(raw){
     return;
   }
 
-  let { data: roomData } = await sb
+  // Lookup room — try exact match, then case-insensitive fallback
+  let roomData = null;
+  let lookupErr = null;
+
+  const res1 = await sb
     .from('rooms').select('*, members(*)').eq('code', roomCode).maybeSingle();
+  roomData = res1.data;
+  lookupErr = res1.error;
 
   if(!roomData){
-    const { data: fallback } = await sb
+    const res2 = await sb
       .from('rooms').select('*, members(*)')
       .ilike('code', roomCode).limit(1);
-    roomData = fallback?.[0] || null;
+    roomData = res2.data?.[0] || null;
+    if(res2.error) lookupErr = res2.error;
   }
 
+  if(lookupErr){
+    console.error('[ROOM LOOKUP ERROR]', lookupErr);
+    showJoinError('Connection error', 'Could not reach the room. Try again in a moment.');
+    return;
+  }
   if(!roomData){
     showJoinError('Room not found', "This invite link doesn't match an active room.");
     return;
@@ -933,7 +901,6 @@ function loadVoices(){
   if(!voices.length) voices = speechSynthesis.getVoices();
 }
 
-/* ============ JOIN SCREEN ============ */
 function showJoinError(title, sub){
   $('joinLoading').style.display = 'none';
   $('joinForm').style.display = 'none';
@@ -1044,7 +1011,6 @@ function showJoinCard(guestName){
   }, 3500);
 }
 
-/* ============ ENTER ROOM ============ */
 function enterRoom(){
   if(!room) return;
 
@@ -1076,9 +1042,7 @@ function enterRoom(){
   setTimeout(() => cleanupOwnSignals(), 8000);
 }
 
-/* =========================================================
-   HOST ANIMATION SETUP — talking mouth + jaw + blink
-   ========================================================= */
+/* ============ HOST ANIMATION ============ */
 function setupHostAnimation(){
   const stage = document.querySelector('[data-tile="host"] .host-stage');
   if(!stage) return;
@@ -1086,21 +1050,17 @@ function setupHostAnimation(){
   const img = stage.querySelector('.host-photo');
   if(!img) return;
 
-  // Compute mouth position as percentage of the *visible* image area
-  // Default: 50% horizontal, 66% vertical (typical face)
   const mx = (host && host.mouth_x != null) ? host.mouth_x : 50;
   const my = (host && host.mouth_y != null) ? host.mouth_y : 66;
-  const mw = (host && host.mouth_w != null) ? host.mouth_w : 14; // width as % of stage width
+  const mw = (host && host.mouth_w != null) ? host.mouth_w : 14;
   const mh = (host && host.mouth_h != null) ? host.mouth_h : 6;
 
-  // Eyelid positions — derived from mouth (above it)
-  const eyY = Math.max(15, my - 20);   // eyes usually ~20% above mouth
+  const eyY = Math.max(15, my - 20);
   const eyW = mw * 0.65;
   const eyH = mh * 0.55;
   const eyLX = mx - mw * 0.45;
   const eyRX = mx + mw * 0.45;
 
-  // ===== BUILD THE STAGE DOM =====
   const imgSrc = img.src;
 
   stage.innerHTML = `
@@ -1126,12 +1086,9 @@ function setupHostAnimation(){
     "></div>
   `;
 
-  // Jaw clone: same image, positioned so it lines up, but offset up by 62%
-  // so the bottom portion shows through the clipped jaw-wrap
   const jawWrap = stage.querySelector('#jawWrap');
   const baseImg = stage.querySelector('#hostBaseImg');
 
-  // Wait for image to be laid out, then sync sizes
   requestAnimationFrame(() => {
     const rect = baseImg.getBoundingClientRect();
     const stageRect = stage.getBoundingClientRect();
@@ -1140,7 +1097,6 @@ function setupHostAnimation(){
     clone.src = imgSrc;
     clone.style.width = rect.width + 'px';
     clone.style.height = rect.height + 'px';
-    // Position clone so its bottom aligns with the stage bottom
     clone.style.left = (rect.left - stageRect.left) + 'px';
     clone.style.bottom = (stageRect.bottom - rect.bottom) + 'px';
     jawWrap.innerHTML = '';
@@ -1156,12 +1112,9 @@ function setupHostAnimation(){
   startBlinking();
 }
 
-/* ============ BLINK LOOP ============ */
 function startBlinking(){
   if(blinkTimer) clearInterval(blinkTimer);
-  blinkTimer = setInterval(() => {
-    blinkOnce();
-  }, 2800 + Math.random() * 2500);
+  blinkTimer = setInterval(() => { blinkOnce(); }, 2800 + Math.random() * 2500);
 }
 function blinkOnce(){
   if(!currentEyelidL || !currentEyelidR) return;
@@ -1173,14 +1126,11 @@ function blinkOnce(){
   }, 130);
 }
 
-/* ============ SPEAKING ============ */
 function startSpeakingVisual(){
   if(currentMouthEl){
     currentMouthEl.classList.add('on');
-    // Alternate between two speaking animations for variety
     currentMouthEl.classList.remove('talking','talking-vowel');
     currentMouthEl.classList.add('talking');
-    // Every 500ms, switch animation class for organic feel
     clearInterval(window._mouthSwapTimer);
     window._mouthSwapTimer = setInterval(() => {
       if(!currentMouthEl) return;
@@ -1197,22 +1147,16 @@ function startSpeakingVisual(){
   if(currentJawEl) currentJawEl.classList.add('talking');
 }
 function stopSpeakingVisual(){
-  if(currentMouthEl){
-    currentMouthEl.classList.remove('on','talking','talking-vowel');
-  }
+  if(currentMouthEl) currentMouthEl.classList.remove('on','talking','talking-vowel');
   if(currentLipLineEl) currentLipLineEl.classList.remove('on');
   if(currentJawEl) currentJawEl.classList.remove('talking');
   clearInterval(window._mouthSwapTimer);
 }
 
-/* ============ TALKING ============ */
 function speakText(text){
   if(!text) return;
   const cap = $('caption');
-  if(cap){
-    cap.textContent = text;
-    cap.classList.add('on');
-  }
+  if(cap){ cap.textContent = text; cap.classList.add('on'); }
 
   startSpeakingVisual();
 
@@ -1221,19 +1165,11 @@ function speakText(text){
   if(v) u.voice = v;
   u.rate = 1; u.pitch = 1.05;
 
-  u.onend = () => {
-    stopSpeakingVisual();
-    setTimeout(() => { if(cap) cap.classList.remove('on'); }, 400);
-  };
-  u.onerror = () => {
-    stopSpeakingVisual();
-  };
+  u.onend = () => { stopSpeakingVisual(); setTimeout(() => { if(cap) cap.classList.remove('on'); }, 400); };
+  u.onerror = () => { stopSpeakingVisual(); };
 
-  // Safety timeout — if TTS silently fails, stop visuals after ~6s
   if(speakingTimeout) clearTimeout(speakingTimeout);
-  speakingTimeout = setTimeout(() => {
-    stopSpeakingVisual();
-  }, 6500);
+  speakingTimeout = setTimeout(() => { stopSpeakingVisual(); }, 6500);
 
   speechSynthesis.speak(u);
 }
@@ -1249,22 +1185,16 @@ function startSignaling(){
 async function broadcastSignal(type, payload, toPeer){
   try {
     await sb.from('webrtc_signals').insert({
-      room_id: room.id,
-      from_peer: myPeerId,
-      to_peer: toPeer || null,
-      signal_type: type,
-      payload: payload || {}
+      room_id: room.id, from_peer: myPeerId, to_peer: toPeer || null,
+      signal_type: type, payload: payload || {}
     });
   } catch(e){}
 }
 async function cleanupOwnSignals(){
   try {
     const cutoff = new Date(Date.now() - 60000).toISOString();
-    await sb.from('webrtc_signals')
-      .delete()
-      .eq('room_id', room.id)
-      .eq('from_peer', myPeerId)
-      .lt('created_at', cutoff);
+    await sb.from('webrtc_signals').delete()
+      .eq('room_id', room.id).eq('from_peer', myPeerId).lt('created_at', cutoff);
   } catch(e){}
 }
 async function handleSignal(sig){
@@ -1322,13 +1252,9 @@ async function ensurePeer(peerId, name, type){
   const peer = { pc, stream: null, name, type, hasVideo: false, icePending: [] };
   peers[peerId] = peer;
 
-  if(localStream){
-    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-  }
+  if(localStream){ localStream.getTracks().forEach(track => pc.addTrack(track, localStream)); }
 
-  pc.onicecandidate = e => {
-    if(e.candidate) broadcastSignal('ice', { candidate: e.candidate }, peerId);
-  };
+  pc.onicecandidate = e => { if(e.candidate) broadcastSignal('ice', { candidate: e.candidate }, peerId); };
   pc.ontrack = e => {
     peer.stream = e.streams[0];
     peer.hasVideo = peer.stream.getVideoTracks().length > 0;
@@ -1336,15 +1262,11 @@ async function ensurePeer(peerId, name, type){
     attachStreamToVideo(peerId, peer.stream);
   };
   pc.onconnectionstatechange = () => {
-    if(['failed','disconnected','closed'].includes(pc.connectionState)){
-      teardownPeer(peerId);
-    }
+    if(['failed','disconnected','closed'].includes(pc.connectionState)){ teardownPeer(peerId); }
   };
   pc.oniceconnectionstatechange = async () => {
     if(pc.remoteDescription && peer.icePending?.length){
-      for(const c of peer.icePending){
-        try { await pc.addIceCandidate(c); } catch(e){}
-      }
+      for(const c of peer.icePending){ try { await pc.addIceCandidate(c); } catch(e){} }
       peer.icePending = [];
     }
   };
@@ -1362,21 +1284,18 @@ function teardownPeer(peerId){
 /* ============ CAMERA / MIC ============ */
 $('cameraBtn').addEventListener('click', async () => {
   const btn = $('cameraBtn');
-
   if(cameraOn){
     if(localStream){
-      const videoTracks = localStream.getVideoTracks();
-      videoTracks.forEach(t => t.stop());
-      videoTracks.forEach(t => localStream.removeTrack(t));
+      const vt = localStream.getVideoTracks();
+      vt.forEach(t => t.stop());
+      vt.forEach(t => localStream.removeTrack(t));
     }
     cameraOn = false;
     btn.classList.remove('on');
     Object.values(peers).forEach(p => {
       const senders = p.pc.getSenders();
       senders.forEach(s => {
-        if(s.track && s.track.kind === 'video'){
-          try { p.pc.removeTrack(s); } catch(e){}
-        }
+        if(s.track && s.track.kind === 'video'){ try { p.pc.removeTrack(s); } catch(e){} }
       });
     });
     renderGrid();
@@ -1385,19 +1304,14 @@ $('cameraBtn').addEventListener('click', async () => {
   }
 
   btn.classList.add('loading');
-
   try {
     const wantAudio = !localStream || localStream.getAudioTracks().length === 0;
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
       audio: wantAudio
     });
-
-    if(localStream){
-      stream.getTracks().forEach(t => localStream.addTrack(t));
-    } else {
-      localStream = stream;
-    }
+    if(localStream){ stream.getTracks().forEach(t => localStream.addTrack(t)); }
+    else { localStream = stream; }
 
     cameraOn = true;
     btn.classList.remove('loading');
@@ -1419,7 +1333,6 @@ $('cameraBtn').addEventListener('click', async () => {
       await peers[p.id].pc.setLocalDescription(offer);
       await broadcastSignal('offer', { sdp: offer.sdp, name: myPeerName, type: me.type }, p.id);
     }
-
     toast('Camera on', 'ok');
   } catch(err){
     btn.classList.remove('loading');
@@ -1430,9 +1343,7 @@ $('cameraBtn').addEventListener('click', async () => {
 $('micBtn').addEventListener('click', () => {
   micOn = !micOn;
   $('micBtn').classList.toggle('on', micOn);
-  if(localStream){
-    localStream.getAudioTracks().forEach(t => t.enabled = micOn);
-  }
+  if(localStream){ localStream.getAudioTracks().forEach(t => t.enabled = micOn); }
   toast(micOn ? 'Mic on' : 'Mic muted');
 });
 
@@ -1448,31 +1359,22 @@ async function fetchExistingPeerIds(){
   return list;
 }
 
-/* ============ AUDIO PROMPT ============ */
+/* ============ AUDIO ============ */
 $('audioPromptBtn').addEventListener('click', () => {
   $('audioPrompt').classList.remove('on');
-  document.querySelectorAll('video').forEach(v => {
-    if(!v.muted) v.play().catch(()=>{});
-  });
+  document.querySelectorAll('video').forEach(v => { if(!v.muted) v.play().catch(()=>{}); });
 });
 function checkAutoplayBlocked(videoEl){
   if(!videoEl) return;
   const p = videoEl.play();
-  if(p && p.catch){
-    p.catch(() => {
-      if(!videoEl.muted) $('audioPrompt').classList.add('on');
-    });
-  }
+  if(p && p.catch){ p.catch(() => { if(!videoEl.muted) $('audioPrompt').classList.add('on'); }); }
 }
 
 /* ============ VIDEO GRID ============ */
 function attachStreamToVideo(tileId, stream){
   const v = $('video-' + tileId);
   if(!v) return;
-  if(v.srcObject !== stream){
-    v.srcObject = stream;
-    checkAutoplayBlocked(v);
-  }
+  if(v.srcObject !== stream){ v.srcObject = stream; checkAutoplayBlocked(v); }
 }
 
 function renderGrid(){
@@ -1481,8 +1383,7 @@ function renderGrid(){
   const tiles = [];
 
   tiles.push({
-    id: 'host', type: 'host',
-    name: host?.name || 'Host',
+    id: 'host', type: 'host', name: host?.name || 'Host',
     img: host?.photo_url || 'data:image/svg+xml;utf8,'+encodeURIComponent(
       '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500"><rect width="100%" height="100%" fill="#2a0010"/><text x="50%" y="55%" font-size="40" fill="#666" text-anchor="middle" font-family="sans-serif">Host</text></svg>'
     )
@@ -1491,11 +1392,8 @@ function renderGrid(){
   if(cameraOn && localStream){
     tiles.push({ id: 'me', type: me?.type || 'guest', name: myPeerName || 'You', isMe: true, stream: localStream });
   }
-
   Object.entries(peers).forEach(([pid, p]) => {
-    if(p.stream){
-      tiles.push({ id: pid, type: p.type, name: p.name, stream: p.stream });
-    }
+    if(p.stream){ tiles.push({ id: pid, type: p.type, name: p.name, stream: p.stream }); }
   });
 
   const n = tiles.length;
@@ -1578,10 +1476,7 @@ function appendMessage(m, scroll){
     <div class="body"><span class="name">${escapeHtml(m.sender_name || 'Guest')}</span>${escapeHtml(m.text)}</div>`;
   inner.appendChild(d);
   while(inner.children.length > 40) inner.removeChild(inner.firstChild);
-  if(scroll){
-    const c = $('chatScroll');
-    if(c) c.scrollTop = c.scrollHeight;
-  }
+  if(scroll){ const c = $('chatScroll'); if(c) c.scrollTop = c.scrollHeight; }
 }
 async function sendMessage(){
   const input = $('chatInput');
@@ -1687,9 +1582,7 @@ function renderDrawer(){
     </div>`).join('');
   $('drawerCount').textContent = rows.length + ' in room';
 }
-$('viewerPill').addEventListener('click', () => {
-  $('viewerDrawer').classList.toggle('on');
-});
+$('viewerPill').addEventListener('click', () => { $('viewerDrawer').classList.toggle('on'); });
 document.addEventListener('click', e => {
   const drawer = $('viewerDrawer');
   if(!drawer.classList.contains('on')) return;
