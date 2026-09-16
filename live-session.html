@@ -7,21 +7,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-system,sans-serif;color:#fff;overflow:hidden;}
+html,body{height:100%;background:#000;font-family:'Inter',system-ui,-apple-system,sans-serif;color:#fff;overflow:hidden;}
 
 .app{
   position:relative;width:100%;max-width:430px;height:100vh;max-height:932px;
-  margin:0 auto;background:#160000;overflow:hidden;
+  margin:0 auto;background:#000;overflow:hidden;
 }
 
-/* =========================================================
-   SCREEN SWITCHER
-   ========================================================= */
 .screen{position:absolute;inset:0;display:none;flex-direction:column;z-index:10;}
 .screen.on{display:flex;}
 
 /* =========================================================
-   JOIN FORM SCREEN
+   JOIN FORM
    ========================================================= */
 #joinScreen{
   align-items:center;justify-content:center;padding:24px;
@@ -76,29 +73,136 @@ html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-sy
 .btn-primary:disabled{opacity:0.6;cursor:not-allowed;}
 
 /* =========================================================
-   LIVE ROOM SCREEN
+   JOIN CARD (TikTok-style welcome overlay)
    ========================================================= */
-#liveScreen{background:#160000;}
+#joinCard{
+  position:absolute;inset:0;z-index:80;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  animation:fadeIn 0.3s ease;
+}
+#joinCard.on{display:flex;}
+#joinCard.fadeOut{animation:fadeOut 0.4s ease forwards;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes fadeOut{to{opacity:0;}}
 
-/* ---- LAYER 5 — HOST VIDEO ---- */
-.layer-video{
-  position:absolute;inset:0;z-index:5;
-  background:radial-gradient(circle at 50% 40%,rgba(255,45,120,0.15),transparent 65%),
-             linear-gradient(160deg,#1a0010,#160000 60%,#0a0000 100%);
+.jc-card{
+  width:calc(100% - 60px);max-width:340px;
+  background:rgba(20,10,10,0.9);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:28px;
+  padding:28px 22px 22px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  animation:cardPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes cardPop{from{transform:scale(0.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+.jc-avatar-wrap{
+  position:relative;width:96px;height:96px;margin:0 auto 14px;
+}
+.jc-avatar-ring{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,#ff2d78,#8b5cf6,#ff2d78);
+  animation:ringSpin 3s linear infinite;
+  padding:3px;
+}
+@keyframes ringSpin{to{transform:rotate(360deg);}}
+.jc-avatar-inner{
+  position:absolute;inset:3px;border-radius:50%;
+  background:#000;overflow:hidden;
+}
+.jc-avatar-inner img{
+  width:100%;height:100%;object-fit:cover;
+}
+.jc-name{
+  font-size:18px;font-weight:900;letter-spacing:-0.3px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  margin-bottom:4px;
+}
+.jc-verified{
+  width:16px;height:16px;border-radius:50%;
+  background:linear-gradient(135deg,#3b82f6,#8b5cf6);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:900;
+}
+.jc-meta{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:14px;}
+.jc-live-row{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-bottom:18px;
+}
+.jc-live-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:linear-gradient(135deg,#ff2d78,#ff5c2d);
+  padding:4px 10px;border-radius:100px;
+  font-size:10px;font-weight:900;letter-spacing:0.6px;
+  box-shadow:0 0 14px rgba(255,45,120,0.6);
+}
+.jc-live-pill .dot{width:5px;height:5px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.jc-viewers{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,0.08);
+  padding:4px 10px;border-radius:100px;
+  font-size:11px;font-weight:700;
+}
+.jc-viewers svg{width:12px;height:12px;fill:#fff;}
+.jc-msg{
+  font-size:13px;color:rgba(255,255,255,0.7);
+  line-height:1.5;margin-bottom:16px;
+}
+.jc-msg b{color:#ff2d78;}
+.jc-enter-btn{
+  width:100%;padding:14px;border-radius:100px;
+  background:linear-gradient(135deg,#ff2d78,#8b5cf6);
+  border:none;color:#fff;font-size:14px;font-weight:800;
+  cursor:pointer;box-shadow:0 8px 24px rgba(255,45,120,0.4);
+  font-family:inherit;
+}
+.jc-enter-btn:active{transform:scale(0.97);}
+
+/* =========================================================
+   LIVE ROOM
+   ========================================================= */
+#liveScreen{background:#000;}
+
+/* Video grid — top 55% of screen */
+.video-grid{
+  position:absolute;top:0;left:0;right:0;height:58%;
+  z-index:5;display:grid;gap:2px;background:#000;
   overflow:hidden;
 }
-.host-img{
+.video-grid.g-1{grid-template-columns:1fr;}
+.video-grid.g-2{grid-template-columns:1fr 1fr;}
+.video-grid.g-3{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;}
+.video-grid.g-3 .tile:first-child{grid-column:1 / span 2;}
+.video-grid.g-4{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;}
+.video-grid.g-5{grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;}
+.video-grid.g-5 .tile:first-child{grid-column:1 / span 2;}
+.video-grid.g-6{grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;}
+
+.tile{
+  position:relative;background:#0a0000;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.tile-img{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
   max-width:100%;max-height:100%;
-  object-fit:contain;will-change:transform;
+  object-fit:cover;width:100%;height:100%;
 }
-.host-img.bob{animation:bob 3.6s ease-in-out infinite;}
+.tile-img.host-fit{object-fit:contain;}
+.tile-img.bob{animation:bob 3.6s ease-in-out infinite;}
 @keyframes bob{
   0%,100%{transform:translate(-50%,-50%) rotate(0deg);}
-  25%  {transform:translate(-50%,calc(-50% - 3px)) rotate(-0.4deg);}
-  50%  {transform:translate(-50%,-50%) rotate(0deg);}
-  75%  {transform:translate(-50%,calc(-50% - 2px)) rotate(0.4deg);}
+  25%{transform:translate(-50%,calc(-50% - 3px)) rotate(-0.4deg);}
+  50%{transform:translate(-50%,-50%) rotate(0deg);}
+  75%{transform:translate(-50%,calc(-50% - 2px)) rotate(0.4deg);}
+}
+.tile-video{
+  width:100%;height:100%;object-fit:cover;
+  transform:scaleX(-1);
 }
 .mouth{
   position:absolute;
@@ -115,136 +219,155 @@ html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-sy
   50%{transform:scaleY(1);}
   100%{transform:scaleY(0.15);}
 }
+.tile-label{
+  position:absolute;bottom:8px;left:8px;right:8px;
+  display:flex;align-items:center;gap:6px;
+  padding:4px 8px;border-radius:100px;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  font-size:11px;font-weight:700;
+  color:#fff;
+  z-index:3;
+  max-width:fit-content;
+}
+.tile-label.host{background:linear-gradient(135deg,rgba(255,45,120,0.8),rgba(139,92,246,0.8));}
+.tile-label .mic{
+  width:12px;height:12px;border-radius:50%;
+  background:#22c55e;
+  display:inline-block;position:relative;
+}
+.tile-label .mic.muted{background:#6b7280;}
+.tile-placeholder{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;text-align:center;padding:16px;color:rgba(255,255,255,0.5);
+  font-size:11px;font-weight:600;
+}
+.tile-placeholder .icon{font-size:32px;opacity:0.5;}
+
+/* Video fade at bottom of grid */
 .video-fade{
-  position:absolute;left:0;right:0;bottom:0;height:55%;z-index:6;
-  background:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,0.35) 50%,rgba(0,0,0,0.75) 100%);
-  pointer-events:none;
+  position:absolute;left:0;right:0;height:58%;
+  top:0;z-index:6;pointer-events:none;
+  background:linear-gradient(to bottom,transparent 65%,rgba(0,0,0,0.55) 100%);
 }
 
-/* ---- LAYER 9 — TOP BAR ---- */
-.layer-top{
-  position:absolute;top:0;left:0;right:0;z-index:9;
-  padding:14px 12px;
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+.top-bar{
+  position:absolute;top:0;left:0;right:0;z-index:20;
+  padding:14px 14px;
   padding-top:max(14px,env(safe-area-inset-top));
   display:flex;align-items:center;justify-content:space-between;
-  background:linear-gradient(to bottom,rgba(0,0,0,0.55),transparent);
+  background:linear-gradient(to bottom,rgba(0,0,0,0.6),transparent);
+  pointer-events:none;
 }
+.top-bar > *{pointer-events:auto;}
+.tb-left{display:flex;align-items:center;gap:8px;}
+.tb-center{display:flex;align-items:center;gap:6px;}
+.tb-right{display:flex;align-items:center;gap:8px;}
+
 .live-badge{
-  display:flex;align-items:center;gap:6px;
-  background:linear-gradient(135deg,#ff2d78,#ff5c2d);
-  padding:5px 11px;border-radius:100px;
-  font-size:11px;font-weight:900;letter-spacing:0.6px;
-  box-shadow:0 0 18px rgba(255,45,120,0.65);
-}
-.live-badge .dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
-.top-right{display:flex;align-items:center;gap:8px;}
-.viewers{
   display:flex;align-items:center;gap:5px;
-  background:rgba(0,0,0,0.35);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  background:linear-gradient(135deg,#ff2d78,#ff5c2d);
   padding:5px 10px;border-radius:100px;
-  font-size:11px;font-weight:700;
+  font-size:11px;font-weight:900;letter-spacing:0.6px;
+  box-shadow:0 0 16px rgba(255,45,120,0.65);
 }
-.viewers svg{width:13px;height:13px;fill:#fff;}
-.close-btn{
+.live-badge .dot{width:5px;height:5px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite;}
+
+.viewer-pill{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.1);
+  padding:5px 11px;border-radius:100px;
+  font-size:11px;font-weight:800;cursor:pointer;
+  transition:background 0.15s;
+}
+.viewer-pill:hover{background:rgba(255,255,255,0.12);}
+.viewer-pill svg{width:12px;height:12px;fill:#fff;}
+
+.icon-btn-sm{
   width:32px;height:32px;border-radius:50%;
-  background:rgba(0,0,0,0.35);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  border:none;color:#fff;font-size:14px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
 }
+.icon-btn-sm:hover{background:rgba(255,255,255,0.15);}
 
-/* ---- HOST INFO ---- */
-.host-info{
-  position:absolute;left:12px;right:110px;bottom:16px;z-index:9;
-}
-.host-name{
-  font-size:19px;font-weight:800;letter-spacing:-0.3px;
-  display:flex;align-items:center;gap:6px;
-  text-shadow:0 2px 10px rgba(0,0,0,0.95);
-  line-height:1.15;
-}
-.verified{
-  width:16px;height:16px;border-radius:50%;
-  background:linear-gradient(135deg,#3b82f6,#8b5cf6);
-  display:inline-flex;align-items:center;justify-content:center;
-  font-size:9px;font-weight:900;flex:0 0 16px;
-}
-.host-meta{
-  font-size:12px;color:rgba(255,255,255,0.9);
-  margin-top:3px;font-weight:500;
-  text-shadow:0 2px 8px rgba(0,0,0,0.9);
-}
-.host-pitch{
-  font-size:12.5px;color:rgba(255,255,255,0.85);
-  margin-top:6px;line-height:1.4;font-weight:500;
-  text-shadow:0 2px 8px rgba(0,0,0,0.9);
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-}
-
-/* ---- CAPTION ---- */
+/* =========================================================
+   CAPTION (host speaking)
+   ========================================================= */
 .caption{
-  position:absolute;left:50%;bottom:70px;transform:translateX(-50%);
+  position:absolute;left:50%;top:calc(58% - 60px);transform:translateX(-50%);
   background:rgba(0,0,0,0.75);
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   padding:8px 14px;border-radius:18px;
   font-size:13px;font-weight:600;line-height:1.35;
-  max-width:calc(100% - 130px);text-align:center;
-  opacity:0;transition:opacity 0.25s;z-index:9;
+  max-width:calc(100% - 40px);text-align:center;
+  opacity:0;transition:opacity 0.25s;z-index:12;
+  pointer-events:none;
 }
 .caption.on{opacity:1;}
 
-/* ---- LAYER 10 — CHAT ---- */
-.layer-chat{
-  position:absolute;left:12px;right:104px;bottom:80px;z-index:10;
+/* =========================================================
+   CHAT — overlays lower part of video
+   ========================================================= */
+.chat-layer{
+  position:absolute;left:12px;right:90px;
+  bottom:calc(42% + 12px);
+  top:auto;
   display:flex;flex-direction:column;justify-content:flex-end;
-  gap:6px;max-height:36vh;
-  mask-image:linear-gradient(to top,transparent 0%,#000 20%);
-  -webkit-mask-image:linear-gradient(to top,transparent 0%,#000 20%);
-  pointer-events:none;
-  overflow:hidden;
+  gap:5px;max-height:30vh;overflow:hidden;
+  z-index:11;pointer-events:none;
+  mask-image:linear-gradient(to top,transparent 0%,#000 18%);
+  -webkit-mask-image:linear-gradient(to top,transparent 0%,#000 18%);
 }
 .msg{
   display:flex;gap:6px;align-items:flex-start;
   animation:msgIn 0.4s ease;
 }
 .msg .avatar{
-  width:26px;height:26px;border-radius:50%;flex:0 0 26px;
+  width:24px;height:24px;border-radius:50%;flex:0 0 24px;
   background:linear-gradient(135deg,#ff2d78,#8b5cf6);
   display:flex;align-items:center;justify-content:center;
-  font-size:10px;font-weight:900;color:#fff;
-  border:1px solid rgba(255,255,255,0.3);
+  font-size:9px;font-weight:900;color:#fff;
+  border:1px solid rgba(255,255,255,0.25);
   text-transform:uppercase;
 }
 .msg .avatar.admin{background:linear-gradient(135deg,#f59e0b,#ef4444);}
 .msg .avatar.host{background:linear-gradient(135deg,#22c55e,#16a34a);}
 .msg .body{
-  background:rgba(0,0,0,0.4);
+  background:rgba(0,0,0,0.45);
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  padding:5px 10px;border-radius:14px;
-  font-size:12.5px;line-height:1.35;
+  padding:4px 9px;border-radius:12px;
+  font-size:12px;line-height:1.35;
   max-width:100%;word-break:break-word;
 }
 .msg .name{color:#ff8bb8;font-weight:700;margin-right:4px;}
 .msg.admin .name{color:#fbbf24;}
 .msg.host .name{color:#4ade80;}
 .msg.system .body{
-  background:rgba(255,45,120,0.2);
-  color:#ff8bb8;font-weight:700;font-size:11.5px;
-  padding:4px 10px;border-radius:100px;
+  background:rgba(255,45,120,0.22);
+  color:#ff8bb8;font-weight:700;font-size:11px;
+  padding:3px 9px;border-radius:100px;
 }
 @keyframes msgIn{
   from{opacity:0;transform:translateY(8px);}
   to{opacity:1;transform:translateY(0);}
 }
 
-/* ---- LAYER 11 — ACTION BAR ---- */
-.layer-actions{
-  position:absolute;left:0;right:0;bottom:0;z-index:11;
+/* =========================================================
+   BOTTOM — ACTION BAR
+   ========================================================= */
+.action-bar{
+  position:absolute;left:0;right:0;bottom:0;z-index:20;
   padding:10px 12px;
   padding-bottom:max(10px,env(safe-area-inset-bottom));
-  background:linear-gradient(to top,rgba(0,0,0,0.85) 40%,transparent);
+  background:linear-gradient(to top,rgba(0,0,0,0.9) 30%,transparent);
   display:flex;align-items:center;gap:8px;
 }
 .action-input{
@@ -258,12 +381,13 @@ html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-sy
 .action-input::placeholder{color:rgba(255,255,255,0.45);}
 .icon-btn{
   width:40px;height:40px;border-radius:50%;flex:0 0 40px;
-  background:rgba(0,0,0,0.35);
+  background:rgba(255,255,255,0.1);
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border:1px solid rgba(255,255,255,0.1);
   color:#fff;font-size:18px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:transform 0.15s;position:relative;
+  transition:transform 0.15s,background 0.15s;
+  position:relative;
 }
 .icon-btn:active{transform:scale(0.9);}
 .icon-btn.gift{background:linear-gradient(135deg,#ff2d78,#8b5cf6);border-color:transparent;box-shadow:0 4px 16px rgba(255,45,120,0.4);}
@@ -273,26 +397,33 @@ html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-sy
   background:#fff;color:#ff2d78;
   font-size:9px;font-weight:900;
   display:flex;align-items:center;justify-content:center;
-  border:2px solid #160000;
+  border:2px solid #000;
+}
+.icon-btn.camera.on{
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  border-color:transparent;
+  box-shadow:0 0 16px rgba(34,197,94,0.5);
 }
 
-/* ---- ADMIN CONTROL BAR (bottom, above actions) ---- */
+/* =========================================================
+   ADMIN CONTROL BAR — sits above action bar
+   ========================================================= */
 .admin-bar{
   display:none;
-  position:absolute;left:0;right:0;bottom:62px;z-index:12;
+  position:absolute;left:0;right:0;bottom:62px;z-index:19;
   padding:8px 12px;
-  background:linear-gradient(to top,rgba(20,10,0,0.9),rgba(0,0,0,0.5));
-  border-top:1px solid rgba(255,45,120,0.2);
+  background:linear-gradient(to top,rgba(20,0,10,0.95),rgba(0,0,0,0.6));
+  border-top:1px solid rgba(255,45,120,0.25);
   gap:6px;align-items:center;flex-wrap:wrap;
 }
 .admin-bar.on{display:flex;}
 .admin-label{
   font-size:9px;font-weight:900;letter-spacing:1px;
   color:#ff2d78;text-transform:uppercase;
-  padding:0 6px 0 2px;
+  padding:0 4px 0 2px;
 }
 .admin-btn{
-  padding:7px 12px;border-radius:100px;
+  padding:6px 11px;border-radius:100px;
   background:rgba(255,255,255,0.08);
   border:1px solid rgba(255,255,255,0.15);
   color:#fff;font-size:11px;font-weight:700;
@@ -304,7 +435,97 @@ html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-sy
 .admin-btn.speak{background:linear-gradient(135deg,#ff2d78,#8b5cf6);border-color:transparent;box-shadow:0 4px 12px rgba(255,45,120,0.35);}
 .admin-btn.end{background:rgba(239,68,68,0.2);color:#f87171;border-color:rgba(239,68,68,0.4);}
 
-/* ---- FLOATING GIFTS ---- */
+/* =========================================================
+   VIEWER DRAWER
+   ========================================================= */
+.viewer-drawer{
+  position:absolute;left:0;right:0;bottom:0;z-index:90;
+  max-height:60vh;
+  background:#0e0e14;
+  border-top-left-radius:24px;border-top-right-radius:24px;
+  transform:translateY(100%);
+  transition:transform 0.3s ease;
+  display:flex;flex-direction:column;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.viewer-drawer.on{transform:translateY(0);}
+.drawer-handle{
+  width:36px;height:4px;border-radius:2px;
+  background:rgba(255,255,255,0.2);
+  margin:10px auto 6px;
+}
+.drawer-head{
+  padding:8px 20px 14px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.drawer-title{
+  font-size:15px;font-weight:900;
+  display:flex;align-items:center;gap:6px;
+}
+.drawer-count{
+  font-size:12px;color:rgba(255,255,255,0.5);font-weight:600;
+}
+.drawer-list{
+  overflow-y:auto;padding:8px 0;
+  flex:1;
+}
+.viewer-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 20px;
+}
+.viewer-av{
+  width:34px;height:34px;border-radius:50%;flex:0 0 34px;
+  background:linear-gradient(135deg,#ff2d78,#8b5cf6);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;text-transform:uppercase;
+}
+.viewer-av.admin{background:linear-gradient(135deg,#f59e0b,#ef4444);}
+.viewer-av.host{background:linear-gradient(135deg,#22c55e,#16a34a);}
+.viewer-info{flex:1;min-width:0;}
+.viewer-name{font-size:13.5px;font-weight:700;}
+.viewer-role{font-size:11px;color:rgba(255,255,255,0.45);}
+
+/* =========================================================
+   NOTICE OVERLAY
+   ========================================================= */
+.notice{
+  position:absolute;inset:0;z-index:100;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;background:rgba(5,0,0,0.97);padding:32px;text-align:center;
+}
+.notice.on{display:flex;}
+.notice-icon{font-size:56px;}
+.notice-title{font-size:22px;font-weight:900;letter-spacing:-0.4px;}
+.notice-sub{font-size:14px;color:rgba(255,255,255,0.5);max-width:300px;line-height:1.55;}
+.notice-btn{
+  margin-top:8px;padding:12px 24px;border-radius:100px;
+  background:linear-gradient(135deg,#ff2d78,#8b5cf6);
+  border:none;color:#fff;font-size:14px;font-weight:800;
+  cursor:pointer;box-shadow:0 6px 20px rgba(255,45,120,0.4);
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+.loading{
+  position:absolute;inset:0;z-index:70;
+  display:none;align-items:center;justify-content:center;
+  flex-direction:column;gap:14px;
+  background:#000;color:rgba(255,255,255,0.6);font-size:13px;
+}
+.loading.on{display:flex;}
+.spinner{
+  width:36px;height:36px;border-radius:50%;
+  border:3px solid rgba(255,255,255,0.1);
+  border-top-color:#ff2d78;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* =========================================================
+   FLOATING GIFTS/HEARTS
+   ========================================================= */
 .gift-float{
   position:absolute;font-size:26px;pointer-events:none;z-index:30;
   animation:giftUp 3s ease-out forwards;
@@ -324,57 +545,6 @@ html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-sy
   0%{opacity:1;transform:translateY(0) scale(0.8);}
   100%{opacity:0;transform:translateY(-180px) scale(1.4);}
 }
-
-/* ---- NOTICE OVERLAY (kicked, ended) ---- */
-.notice{
-  position:absolute;inset:0;z-index:100;
-  display:none;flex-direction:column;align-items:center;justify-content:center;
-  gap:16px;background:rgba(10,0,0,0.95);padding:32px;text-align:center;
-}
-.notice.on{display:flex;}
-.notice-icon{font-size:56px;}
-.notice-title{font-size:22px;font-weight:900;letter-spacing:-0.4px;}
-.notice-sub{font-size:14px;color:rgba(255,255,255,0.5);max-width:300px;line-height:1.55;}
-.notice-btn{
-  margin-top:8px;padding:12px 24px;border-radius:100px;
-  background:linear-gradient(135deg,#ff2d78,#8b5cf6);
-  border:none;color:#fff;font-size:14px;font-weight:800;
-  cursor:pointer;box-shadow:0 6px 20px rgba(255,45,120,0.4);
-}
-
-/* ---- LOADING ---- */
-.loading{
-  position:absolute;inset:0;z-index:70;
-  display:none;align-items:center;justify-content:center;
-  flex-direction:column;gap:14px;
-  background:#160000;color:rgba(255,255,255,0.6);font-size:13px;
-}
-.loading.on{display:flex;}
-.spinner{
-  width:36px;height:36px;border-radius:50%;
-  border:3px solid rgba(255,255,255,0.1);
-  border-top-color:#ff2d78;
-  animation:spin 0.8s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* ---- GUESTS BAR (top of chat, shows who's in room) ---- */
-.guests-strip{
-  position:absolute;top:64px;left:12px;right:12px;z-index:9;
-  display:flex;gap:6px;flex-wrap:wrap;
-  pointer-events:none;
-}
-.guest-chip{
-  display:inline-flex;align-items:center;gap:5px;
-  background:rgba(0,0,0,0.45);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  padding:4px 9px;border-radius:100px;
-  font-size:10.5px;font-weight:700;color:#fff;
-  border:1px solid rgba(255,255,255,0.1);
-  animation:chipIn 0.3s ease;
-}
-.guest-chip.admin{background:rgba(245,158,11,0.3);border-color:rgba(245,158,11,0.5);}
-@keyframes chipIn{from{opacity:0;transform:scale(0.8);}to{opacity:1;transform:scale(1);}}
 </style>
 </head>
 <body>
@@ -382,7 +552,7 @@ html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-sy
 <div class="app" id="app">
 
   <!-- =========================================================
-       SCREEN 1 — JOIN FORM
+       JOIN FORM
        ========================================================= -->
   <div class="screen on" id="joinScreen">
     <div class="join-card">
@@ -395,19 +565,16 @@ html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-sy
         <input id="jName" placeholder="Enter your full name" autocomplete="name" maxlength="40">
         <div class="err-msg" id="errName">Please enter your full name</div>
       </div>
-
       <div class="field">
         <label>Age</label>
         <input id="jAge" placeholder="Enter your age" inputmode="numeric" maxlength="3">
         <div class="err-msg" id="errAge">Please enter a valid age</div>
       </div>
-
       <div class="field">
         <label>Location</label>
         <input id="jLocation" placeholder="Where are you from?" maxlength="40">
         <div class="err-msg" id="errLocation">Please enter your location</div>
       </div>
-
       <div class="field">
         <label>Passcode</label>
         <input id="jPasscode" placeholder="Enter the room passcode" maxlength="20" autocomplete="off">
@@ -420,59 +587,51 @@ html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-sy
   </div>
 
   <!-- =========================================================
-       SCREEN 2 — LIVE ROOM
+       LIVE ROOM
        ========================================================= -->
   <div class="screen" id="liveScreen">
 
-    <!-- LAYER 5 — HOST -->
-    <div class="layer-video" id="layerVideo">
-      <img class="host-img bob" id="hostImg" alt="">
-      <div class="mouth" id="mouth"></div>
+    <!-- VIDEO GRID -->
+    <div class="video-grid g-1" id="videoGrid">
+      <!-- tiles injected by JS -->
     </div>
     <div class="video-fade"></div>
 
-    <!-- LAYER 9 — TOP BAR -->
-    <div class="layer-top">
-      <div class="live-badge"><span class="dot"></span>LIVE</div>
-      <div class="top-right">
-        <div class="viewers">
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="tb-left">
+        <div class="live-badge"><span class="dot"></span>LIVE</div>
+      </div>
+      <div class="tb-center">
+        <div class="viewer-pill" id="viewerPill">
           <svg viewBox="0 0 24 24"><path d="M12 5c-5 0-9 4.5-9 7s4 7 9 7 9-4.5 9-7-4-7-9-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
-          <span id="viewerCount">1</span>
+          <span id="viewerCount">357</span>
         </div>
-        <button class="close-btn" id="closeBtn">✕</button>
       </div>
-    </div>
-
-    <!-- GUESTS STRIP -->
-    <div class="guests-strip" id="guestsStrip"></div>
-
-    <!-- HOST INFO -->
-    <div class="host-info">
-      <div class="host-name">
-        <span id="hostName">Host</span>
-        <span class="verified">✓</span>
+      <div class="tb-right">
+        <button class="icon-btn-sm" id="settingsBtn">⋮</button>
+        <button class="icon-btn-sm" id="closeBtn">✕</button>
       </div>
-      <div class="host-meta" id="hostMeta">— • —</div>
-      <div class="host-pitch" id="hostPitch"></div>
     </div>
 
     <!-- CAPTION -->
     <div class="caption" id="caption"></div>
 
-    <!-- LAYER 10 — CHAT -->
-    <div class="layer-chat" id="chatScroll"></div>
+    <!-- CHAT LAYER -->
+    <div class="chat-layer" id="chatScroll"></div>
 
     <!-- ADMIN CONTROL BAR -->
     <div class="admin-bar" id="adminBar">
       <span class="admin-label">Admin</span>
-      <button class="admin-btn speak" id="speakBtn">🎤 Speak next line</button>
+      <button class="admin-btn speak" id="speakBtn">🎤 Speak next</button>
       <button class="admin-btn" id="greetBtn">👋 Greet user</button>
-      <button class="admin-btn end" id="endRoomBtn">⏹ End room</button>
+      <button class="admin-btn end" id="endRoomBtn">⏹ End</button>
     </div>
 
-    <!-- LAYER 11 — ACTION BAR -->
-    <div class="layer-actions">
+    <!-- ACTION BAR -->
+    <div class="action-bar">
       <input class="action-input" id="chatInput" placeholder="Say something..." maxlength="200">
+      <button class="icon-btn camera" id="cameraBtn" title="Toggle camera">📷</button>
       <button class="icon-btn gift" id="giftBtn">
         🎁
         <span class="badge" id="giftCount">0</span>
@@ -480,7 +639,41 @@ html,body{height:100%;background:#160000;font-family:'Inter',system-ui,-apple-sy
       <button class="icon-btn" id="likeBtn">❤️</button>
     </div>
 
-    <!-- NOTICE OVERLAY -->
+    <!-- VIEWER DRAWER -->
+    <div class="viewer-drawer" id="viewerDrawer">
+      <div class="drawer-handle"></div>
+      <div class="drawer-head">
+        <div class="drawer-title">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#fff;"><path d="M12 5c-5 0-9 4.5-9 7s4 7 9 7 9-4.5 9-7-4-7-9-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
+          Viewers
+        </div>
+        <div class="drawer-count" id="drawerCount">0</div>
+      </div>
+      <div class="drawer-list" id="drawerList"></div>
+    </div>
+
+    <!-- JOIN CARD (welcome overlay) -->
+    <div id="joinCard">
+      <div class="jc-card">
+        <div class="jc-avatar-wrap">
+          <div class="jc-avatar-ring"></div>
+          <div class="jc-avatar-inner"><img id="jcAvatar" src="" alt=""></div>
+        </div>
+        <div class="jc-name"><span id="jcName">Host</span> <span class="jc-verified">✓</span></div>
+        <div class="jc-meta" id="jcMeta">—</div>
+        <div class="jc-live-row">
+          <div class="jc-live-pill"><span class="dot"></span>LIVE</div>
+          <div class="jc-viewers">
+            <svg viewBox="0 0 24 24"><path d="M12 5c-5 0-9 4.5-9 7s4 7 9 7 9-4.5 9-7-4-7-9-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
+            <span id="jcViewers">357</span>
+          </div>
+        </div>
+        <div class="jc-msg">Welcome, <b id="jcGuestName">Guest</b> — you're joining the room</div>
+        <button class="jc-enter-btn" id="jcEnterBtn">Enter Live</button>
+      </div>
+    </div>
+
+    <!-- NOTICE -->
     <div class="notice" id="noticeScreen">
       <div class="notice-icon" id="noticeIcon">⏹</div>
       <div class="notice-title" id="noticeTitle">Session ended</div>
@@ -512,18 +705,25 @@ const $ = id => document.getElementById(id);
 /* =========================================================
    STATE
    ========================================================= */
-let room = null;            // the room object
-let host = null;            // the member object
-let isAdmin = false;        // admin mode?
-let me = null;              // { type: 'admin'|'guest', name, token, id }
+let room = null;
+let host = null;
+let isAdmin = false;
+let me = null;
 let scriptLines = [];
 let scriptIndex = 0;
 let realtimeChannel = null;
+let statusChannel = null;
 let guestPollTimer = null;
 let heartbeatTimer = null;
+let currentGuests = [];
 let giftCount = 0;
-let pendingGreet = null;    // name of last joined guest for greeting
+let pendingGreet = null;
 let voices = [];
+let myCameraStream = null;
+let myCameraOn = false;
+let localTiles = {}; // token -> tile element
+
+/* mouth position inside host tile (percentage) */
 let mouthX = 50, mouthY = 62, mouthW = 44, mouthH = 20;
 
 /* =========================================================
@@ -533,7 +733,6 @@ let mouthX = 50, mouthY = 62, mouthW = 44, mouthH = 20;
   loadVoices();
   speechSynthesis.onvoiceschanged = loadVoices;
 
-  // URL params
   const params = new URLSearchParams(window.location.search);
   const roomCode = params.get('room');
   const adminFlag = params.get('admin') === '1';
@@ -543,7 +742,6 @@ let mouthX = 50, mouthY = 62, mouthW = 44, mouthH = 20;
     return;
   }
 
-  // Fetch room
   const { data: roomData, error: roomErr } = await sb
     .from('rooms')
     .select('*, members(*)')
@@ -554,13 +752,10 @@ let mouthX = 50, mouthY = 62, mouthW = 44, mouthH = 20;
     showNotice('❌','Room not found','This room does not exist or the invite link is wrong.', 'Go home');
     return;
   }
-
   if(!roomData.is_active){
     showNotice('⏹','Session ended','This room is no longer active.', 'Go home');
     return;
   }
-
-  // Expired?
   if(roomData.expires_at && new Date(roomData.expires_at) < new Date()){
     showNotice('⏰','Invite expired','This invite link has expired.', 'Go home');
     return;
@@ -570,8 +765,7 @@ let mouthX = 50, mouthY = 62, mouthW = 44, mouthH = 20;
   host = roomData.members;
   scriptLines = (host?.script || '').split('\n').map(s=>s.trim()).filter(Boolean);
 
-  if(adminFlag && roomCode){
-    // Admin path — check session, skip form
+  if(adminFlag){
     const { data: { session } } = await sb.auth.getSession();
     if(!session){ window.location.href = 'admin-login.html'; return; }
 
@@ -591,15 +785,13 @@ let mouthX = 50, mouthY = 62, mouthW = 44, mouthH = 20;
       token: 'admin-' + session.user.id,
       id: session.user.id
     };
-
-    enterRoom();
+    // Admin enters directly — no join card
+    enterRoom(true);
     return;
   }
 
-  // Guest path — show join form
+  // Guest → show join form
   $('joinRoomCode').innerHTML = `Room: <b>${escapeHtml(room.code)}</b>`;
-  $('joinScreen').classList.add('on');
-  $('liveScreen').classList.remove('on');
 })();
 
 function loadVoices(){
@@ -617,7 +809,6 @@ $('joinBtn').addEventListener('click', async () => {
   const passcode = $('jPasscode').value.trim();
 
   clearJoinErrors();
-
   let ok = true;
   if(!name){ $('errName').classList.add('on'); ok = false; }
   if(!age || age < 13 || age > 120){ $('errAge').classList.add('on'); ok = false; }
@@ -631,7 +822,6 @@ $('joinBtn').addEventListener('click', async () => {
     return;
   }
 
-  // Check max users
   const { count } = await sb
     .from('guests')
     .select('*', { count: 'exact', head: true })
@@ -667,8 +857,8 @@ $('joinBtn').addEventListener('click', async () => {
 
   me = { type: 'guest', name, token, id: guest.id };
   sessionStorage.setItem('ll_guest_token', token);
+  pendingGreet = name;
 
-  // System message
   await sb.from('messages').insert({
     room_id: room.id,
     sender_type: 'system',
@@ -676,11 +866,10 @@ $('joinBtn').addEventListener('click', async () => {
     text: `${name} joined the room`
   });
 
-  // Save for greeting
-  pendingGreet = name;
-
   btn.disabled = false; btn.textContent = 'Join Room';
-  enterRoom();
+
+  // Show TikTok-style join card first
+  showJoinCard(name);
 });
 
 function clearJoinErrors(){
@@ -689,83 +878,232 @@ function clearJoinErrors(){
 }
 
 /* =========================================================
+   JOIN CARD
+   ========================================================= */
+function showJoinCard(guestName){
+  $('joinScreen').classList.remove('on');
+  $('liveScreen').classList.add('on');
+
+  // Fill card
+  $('jcAvatar').src = host?.photo_url || 'data:image/svg+xml;utf8,'+encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="100%" height="100%" fill="#2a0010"/><text x="50%" y="55%" font-size="60" fill="#fff" text-anchor="middle" font-family="sans-serif">👤</text></svg>'
+  );
+  $('jcName').textContent = host?.name || 'Host';
+  $('jcMeta').textContent = [host?.age, host?.location].filter(Boolean).join(' • ') || '— • —';
+  $('jcGuestName').textContent = guestName;
+  $('jcViewers').textContent = '357';
+
+  $('joinCard').classList.add('on');
+  $('joinCard').classList.remove('fadeOut');
+
+  // Enter button
+  $('jcEnterBtn').onclick = () => {
+    $('joinCard').classList.add('fadeOut');
+    setTimeout(() => {
+      $('joinCard').classList.remove('on','fadeOut');
+      enterRoom(false);
+    }, 380);
+  };
+
+  // Auto-enter after 3 seconds if they don't tap
+  setTimeout(() => {
+    if($('joinCard').classList.contains('on') && !$('joinCard').classList.contains('fadeOut')){
+      $('joinCard').classList.add('fadeOut');
+      setTimeout(() => {
+        $('joinCard').classList.remove('on','fadeOut');
+        enterRoom(false);
+      }, 380);
+    }
+  }, 3500);
+}
+
+/* =========================================================
    ENTER ROOM
    ========================================================= */
-function enterRoom(){
+function enterRoom(immediate){
   $('joinScreen').classList.remove('on');
   $('liveScreen').classList.add('on');
   $('loadingScreen').classList.add('on');
 
-  // Render host
-  $('hostName').textContent = host?.name || 'Host';
-  $('hostMeta').textContent = [host?.age, host?.location].filter(Boolean).join(' • ') || '— • —';
-  $('hostPitch').textContent = host?.pitch ? `"${host.pitch}"` : '';
-  $('hostImg').src = host?.photo_url || 'data:image/svg+xml;utf8,'+encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500"><rect width="100%" height="100%" fill="#2a0010"/><text x="50%" y="50%" font-size="22" fill="#fff" text-anchor="middle" font-family="sans-serif">No photo</text></svg>'
-  );
-
-  // Admin bar
   if(isAdmin) $('adminBar').classList.add('on');
 
-  // Position mouth after a tick
-  setTimeout(positionMouth, 100);
+  // Render initial grid (host only)
+  renderGrid();
+
+  setTimeout(() => {
+    $('loadingScreen').classList.remove('on');
+    positionMouth();
+  }, 400);
+
   window.addEventListener('resize', positionMouth);
 
-  // Start everything
   loadRecentMessages();
   subscribeToMessages();
   subscribeToRoomStatus();
   startGuestListRefresh();
   startHeartbeat();
   updateViewerCount();
-
-  setTimeout(() => $('loadingScreen').classList.remove('on'), 400);
 }
 
 /* =========================================================
-   MOUTH POSITION
+   VIDEO GRID — HOST TILE + USER TILES
    ========================================================= */
-function positionMouth(){
-  const stage = $('layerVideo');
-  const w = stage.clientWidth, h = stage.clientHeight;
-  const m = $('mouth');
-  m.style.left = (mouthX/100*w - mouthW/2) + 'px';
-  m.style.top  = (mouthY/100*h - mouthH/2) + 'px';
-  m.style.width = mouthW + 'px';
-  m.style.height = mouthH + 'px';
+function renderGrid(){
+  const grid = $('videoGrid');
+
+  // Tiles order: host first, then self, then others
+  const tiles = [];
+
+  // HOST TILE
+  tiles.push({
+    id: 'host',
+    type: 'host',
+    name: host?.name || 'Host',
+    img: host?.photo_url || 'data:image/svg+xml;utf8,'+encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500"><rect width="100%" height="100%" fill="#2a0010"/><text x="50%" y="55%" font-size="40" fill="#666" text-anchor="middle" font-family="sans-serif">Host</text></svg>'
+    )
+  });
+
+  // MY TILE (always — with or without camera)
+  if(me){
+    tiles.push({
+      id: 'me',
+      type: me.type,
+      name: me.name,
+      cameraOn: myCameraOn
+    });
+  }
+
+  // OTHER GUEST TILES (just labels for now)
+  currentGuests.forEach(g => {
+    if(g.session_token === me?.token) return;
+    if(me?.type === 'admin' && g.session_token === me?.token) return;
+    tiles.push({
+      id: g.id,
+      type: 'guest',
+      name: g.full_name,
+      cameraOn: false
+    });
+  });
+
+  const n = tiles.length;
+  grid.className = 'video-grid g-' + Math.min(n, 6);
+
+  grid.innerHTML = tiles.map(t => {
+    if(t.type === 'host'){
+      return `
+        <div class="tile" data-tile="host">
+          <img class="tile-img host-fit bob" src="${t.img}" alt="">
+          <div class="mouth" id="mouth"></div>
+          <div class="tile-label host">🎬 ${escapeHtml(t.name)}</div>
+        </div>`;
+    }
+
+    if(t.id === 'me'){
+      if(t.cameraOn){
+        return `
+          <div class="tile" data-tile="me">
+            <video class="tile-video" id="myVideo" autoplay playsinline muted></video>
+            <div class="tile-label ${t.type==='admin'?'host':''}">${t.type==='admin'?'👑':'👤'} ${escapeHtml(t.name)} (you)</div>
+          </div>`;
+      }
+      return `
+        <div class="tile" data-tile="me">
+          <div class="tile-placeholder">
+            <div class="icon">📷</div>
+            <div>Camera off<br>Tap the camera button to appear</div>
+          </div>
+          <div class="tile-label ${t.type==='admin'?'host':''}">${t.type==='admin'?'👑':'👤'} ${escapeHtml(t.name)} (you)</div>
+        </div>`;
+    }
+
+    // other guest — no camera feed yet
+    return `
+      <div class="tile" data-tile="${t.id}">
+        <div class="tile-placeholder">
+          <div class="icon">👤</div>
+          <div>${escapeHtml(t.name)}</div>
+        </div>
+        <div class="tile-label">👤 ${escapeHtml(t.name)}</div>
+      </div>`;
+  }).join('');
+
+  // If my camera is on and I have a stream, attach it
+  if(myCameraOn && myCameraStream){
+    const v = $('myVideo');
+    if(v){ v.srcObject = myCameraStream; }
+  }
+
+  // Reposition mouth after grid change
+  setTimeout(positionMouth, 60);
 }
+
+function positionMouth(){
+  const tile = document.querySelector('[data-tile="host"]');
+  const mouth = $('mouth');
+  if(!tile || !mouth) return;
+  const w = tile.clientWidth, h = tile.clientHeight;
+  mouth.style.left = (mouthX/100*w - mouthW/2) + 'px';
+  mouth.style.top  = (mouthY/100*h - mouthH/2) + 'px';
+  mouth.style.width = mouthW + 'px';
+  mouth.style.height = mouthH + 'px';
+}
+
+/* =========================================================
+   CAMERA TOGGLE
+   ========================================================= */
+$('cameraBtn').addEventListener('click', async () => {
+  if(!myCameraOn){
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+        audio: false
+      });
+      myCameraStream = stream;
+      myCameraOn = true;
+      $('cameraBtn').classList.add('on');
+      renderGrid();
+    } catch(err){
+      alert('Could not access camera: ' + err.message + '\n\nMake sure the site is HTTPS and you allowed camera access.');
+    }
+  } else {
+    if(myCameraStream){
+      myCameraStream.getTracks().forEach(t => t.stop());
+      myCameraStream = null;
+    }
+    myCameraOn = false;
+    $('cameraBtn').classList.remove('on');
+    renderGrid();
+  }
+});
 
 /* =========================================================
    TALKING
    ========================================================= */
-function speakText(text, onDone){
-  if(!text){ if(onDone) onDone(); return; }
+function speakText(text){
+  if(!text) return;
   const mouth = $('mouth');
   const cap = $('caption');
+  if(!mouth || !cap) return;
+
   cap.textContent = text;
   cap.classList.add('on');
 
   const u = new SpeechSynthesisUtterance(text);
   const v = voices[Math.floor(Math.random() * voices.length)];
   if(v) u.voice = v;
-  u.rate = 1;
-  u.pitch = 1.05;
-
+  u.rate = 1; u.pitch = 1.05;
   u.onstart = () => mouth.classList.add('on','talking');
   u.onend = () => {
     mouth.classList.remove('talking');
     setTimeout(() => cap.classList.remove('on'), 400);
-    if(onDone) onDone();
   };
-  u.onerror = () => {
-    mouth.classList.remove('talking');
-    if(onDone) onDone();
-  };
+  u.onerror = () => mouth.classList.remove('talking');
   speechSynthesis.speak(u);
 }
 
 /* =========================================================
-   CHAT — LOAD RECENT + SUBSCRIBE
+   CHAT
    ========================================================= */
 async function loadRecentMessages(){
   const { data } = await sb
@@ -774,9 +1112,8 @@ async function loadRecentMessages(){
     .eq('room_id', room.id)
     .order('created_at', { ascending: false })
     .limit(30);
-
   if(data){
-    data.reverse().forEach(m => appendMessage(m, false));
+    data.reverse().forEach(m => appendMessage(m));
   }
 }
 
@@ -785,51 +1122,38 @@ function subscribeToMessages(){
     .channel('room-' + room.id)
     .on('postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'messages', filter: `room_id=eq.${room.id}` },
-      payload => {
-        appendMessage(payload.new, true);
-      }
+      payload => appendMessage(payload.new)
     )
     .subscribe();
 }
 
-function appendMessage(m, animate){
+function appendMessage(m){
   const c = $('chatScroll');
   const d = document.createElement('div');
   d.className = 'msg';
-
   if(m.sender_type === 'system'){
     d.className = 'msg system';
     d.innerHTML = `<div class="body">${escapeHtml(m.text)}</div>`;
   } else {
     if(m.sender_type === 'admin') d.classList.add('admin');
     if(m.sender_type === 'host') d.classList.add('host');
-
     const initial = (m.sender_name || '?')[0];
     const avClass = m.sender_type === 'admin' ? 'avatar admin'
                   : m.sender_type === 'host' ? 'avatar host'
                   : 'avatar';
     d.innerHTML = `
       <div class="${avClass}">${escapeHtml(initial)}</div>
-      <div class="body">
-        <span class="name">${escapeHtml(m.sender_name || 'Guest')}</span>
-        ${escapeHtml(m.text)}
-      </div>`;
+      <div class="body"><span class="name">${escapeHtml(m.sender_name || 'Guest')}</span>${escapeHtml(m.text)}</div>`;
   }
   c.appendChild(d);
   while(c.children.length > 8) c.removeChild(c.firstChild);
-
-  if(animate) d.scrollIntoView({behavior:'smooth', block:'end'});
 }
 
-/* =========================================================
-   SEND MESSAGE
-   ========================================================= */
 $('chatInput').addEventListener('keydown', async e => {
   if(e.key !== 'Enter') return;
   const text = e.target.value.trim();
   if(!text) return;
   e.target.value = '';
-
   await sb.from('messages').insert({
     room_id: room.id,
     sender_type: isAdmin ? 'admin' : 'guest',
@@ -840,48 +1164,82 @@ $('chatInput').addEventListener('keydown', async e => {
 });
 
 /* =========================================================
-   GUEST LIST — who's in the room
+   GUEST LIST + VIEWER COUNT
    ========================================================= */
 async function startGuestListRefresh(){
   await refreshGuestList();
-  guestPollTimer = setInterval(refreshGuestList, 5000);
+  guestPollTimer = setInterval(refreshGuestList, 4000);
 }
 
 async function refreshGuestList(){
   const { data } = await sb
     .from('guests')
-    .select('id, full_name, is_kicked')
+    .select('id, full_name, is_kicked, session_token')
     .eq('room_id', room.id)
     .eq('is_kicked', false);
 
-  const strip = $('guestsStrip');
-  strip.innerHTML = '';
-
-  if(isAdmin){
-    const chip = document.createElement('span');
-    chip.className = 'guest-chip admin';
-    chip.textContent = '👑 ' + me.name;
-    strip.appendChild(chip);
-  }
-
-  (data || []).forEach(g => {
-    const chip = document.createElement('span');
-    chip.className = 'guest-chip';
-    chip.textContent = g.full_name;
-    strip.appendChild(chip);
-  });
-
-  // Update viewer count = admins(1 if admin in room) + guests
-  const totalGuests = (data || []).length;
-  $('viewerCount').textContent = totalGuests + 1; // +1 for host
+  currentGuests = data || [];
+  updateViewerCount();
+  renderGrid();
+  renderDrawer();
 }
 
-async function updateViewerCount(){
-  await refreshGuestList();
+function updateViewerCount(){
+  // Real count = guests + host + admin (if admin in room)
+  const realCount = currentGuests.length + 1 + (isAdmin ? 1 : 0);
+  // If fewer than 357, show a nicer "realistic" minimum
+  const display = Math.max(realCount, 357);
+  $('viewerCount').textContent = display;
+  $('jcViewers').textContent = display;
+  $('drawerCount').textContent = realCount + ' in room';
 }
 
 /* =========================================================
-   HEARTBEAT — keep guest marked as active
+   VIEWER DRAWER
+   ========================================================= */
+function renderDrawer(){
+  const list = $('drawerList');
+  const rows = [];
+
+  // Host
+  rows.push({ type:'host', name: host?.name || 'Host', role: 'Host' });
+
+  // Me
+  if(me){
+    rows.push({ type: me.type, name: me.name + ' (you)', role: me.type === 'admin' ? 'Admin' : 'Guest' });
+  }
+
+  // Others
+  currentGuests.forEach(g => {
+    if(me?.token === g.session_token) return;
+    rows.push({ type:'guest', name: g.full_name, role: 'Guest' });
+  });
+
+  list.innerHTML = rows.map(r => `
+    <div class="viewer-row">
+      <div class="viewer-av ${r.type}">${escapeHtml(r.name[0])}</div>
+      <div class="viewer-info">
+        <div class="viewer-name">${escapeHtml(r.name)}</div>
+        <div class="viewer-role">${r.role}</div>
+      </div>
+    </div>`).join('');
+}
+
+$('viewerPill').addEventListener('click', () => {
+  $('viewerDrawer').classList.toggle('on');
+});
+
+// Tap outside drawer to close
+document.addEventListener('click', e => {
+  const drawer = $('viewerDrawer');
+  if(!drawer.classList.contains('on')) return;
+  if(drawer.contains(e.target)) return;
+  if($('viewerPill').contains(e.target)) return;
+  drawer.classList.remove('on');
+});
+
+/* =========================================================
+   HEARTBEAT
    ========================================================= */
 function startHeartbeat(){
   if(!me || me.type !== 'guest') return;
@@ -893,10 +1251,10 @@ function startHeartbeat(){
 }
 
 /* =========================================================
-   ROOM STATUS — end detection
+   ROOM STATUS
    ========================================================= */
 function subscribeToRoomStatus(){
-  sb.channel('room-status-' + room.id)
+  statusChannel = sb.channel('room-status-' + room.id)
     .on('postgres_changes',
       { event: 'UPDATE', schema: 'public', table: 'rooms', filter: `id=eq.${room.id}` },
       payload => {
@@ -913,21 +1271,14 @@ function subscribeToRoomStatus(){
    ========================================================= */
 $('speakBtn').addEventListener('click', () => {
   if(!isAdmin) return;
-  if(!scriptLines.length){
-    speakText('This host has no script yet.');
-    return;
-  }
-  const line = scriptLines[scriptIndex % scriptLines.length];
+  if(!scriptLines.length){ speakText('This host has no script yet.'); return; }
+  speakText(scriptLines[scriptIndex % scriptLines.length]);
   scriptIndex++;
-  speakText(line);
 });
 
 $('greetBtn').addEventListener('click', () => {
   if(!isAdmin) return;
-  if(!pendingGreet){
-    speakText('Hi everyone, welcome to the room.');
-    return;
-  }
+  if(!pendingGreet){ speakText('Hi everyone, welcome to the room.'); return; }
   const name = pendingGreet;
   pendingGreet = null;
   speakText(`Hi ${name}, welcome to the room.`);
@@ -941,7 +1292,7 @@ $('endRoomBtn').addEventListener('click', async () => {
 });
 
 /* =========================================================
-   GUEST CONTROLS — gift, like, close
+   GUEST CONTROLS
    ========================================================= */
 $('giftBtn').addEventListener('click', () => {
   const area = $('app');
@@ -975,18 +1326,25 @@ $('likeBtn').addEventListener('click', () => {
   }
 });
 
-$('closeBtn').addEventListener('click', () => {
+$('settingsBtn').addEventListener('click', () => {
+  alert('Settings: flip camera, filters, and quality options will be added here.');
+});
+
+$('closeBtn').addEventListener('click', async () => {
   if(isAdmin){
-    window.close();
-    // fallback if window.close blocked
-    setTimeout(() => { window.location.href = 'admin-panel.html'; }, 100);
+    if(confirm('Leave this room? It stays live for others.')){
+      window.location.href = 'admin-panel.html';
+    }
   } else {
-    if(confirm('Leave this room?')) window.location.href = 'index.html';
+    if(confirm('Leave this room?')){
+      // Mark guest as kicked=false but leave cleanly
+      window.location.href = 'index.html';
+    }
   }
 });
 
 /* =========================================================
-   NOTICE + HELPERS
+   NOTICE
    ========================================================= */
 function showNotice(icon, title, sub, btnText){
   $('noticeIcon').textContent = icon;
@@ -1014,6 +1372,8 @@ window.addEventListener('beforeunload', () => {
   clearInterval(guestPollTimer);
   clearInterval(heartbeatTimer);
   if(realtimeChannel) sb.removeChannel(realtimeChannel);
+  if(statusChannel) sb.removeChannel(statusChannel);
+  if(myCameraStream) myCameraStream.getTracks().forEach(t => t.stop());
 });
 </script>
 </body>
