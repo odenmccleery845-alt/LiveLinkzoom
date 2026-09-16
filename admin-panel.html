@@ -8,8 +8,9 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{min-height:100%;background:#0a0a0f;font-family:'Inter',system-ui,sans-serif;color:#fff;}
-body{padding-bottom:40px;}
+body{padding-bottom:60px;}
 
+/* ========= TOP BAR ========= */
 .topbar{
   position:sticky;top:0;z-index:50;
   display:flex;align-items:center;justify-content:space-between;
@@ -28,67 +29,100 @@ body{padding-bottom:40px;}
   padding:3px 8px;border-radius:100px;vertical-align:middle;
 }
 .topbar-right{display:flex;gap:8px;align-items:center;}
-.icon-btn{
-  width:38px;height:38px;border-radius:50%;
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.1);
-  color:#fff;font-size:16px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-}
-.icon-btn:hover{background:rgba(255,255,255,0.12);}
 .logout-btn{
   padding:9px 16px;border-radius:100px;
   background:rgba(255,255,255,0.06);
   border:1px solid rgba(255,255,255,0.1);
   color:#fff;font-size:12px;font-weight:600;cursor:pointer;
 }
+.logout-btn:hover{background:rgba(255,45,120,0.15);border-color:rgba(255,45,120,0.4);}
 
+/* ========= TABS ========= */
+.tabs{
+  display:flex;gap:4px;
+  padding:12px 20px 0;
+  max-width:920px;margin:0 auto;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.tab{
+  padding:10px 18px;border-radius:100px 100px 0 0;
+  background:transparent;border:none;
+  color:rgba(255,255,255,0.5);
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:inherit;
+  border-bottom:2px solid transparent;
+  transition:color 0.2s,border-color 0.2s;
+}
+.tab.on{color:#fff;border-bottom-color:#ff2d78;}
+.tab:hover{color:rgba(255,255,255,0.8);}
+
+/* ========= CONTAINER ========= */
 .wrap{max-width:920px;margin:0 auto;padding:24px 20px;}
+.view{display:none;}
+.view.on{display:block;}
 
+/* ========= STATS ========= */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
 .stat{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px;}
 .stat .k{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.45);}
 .stat .v{font-size:24px;font-weight:900;letter-spacing:-0.5px;margin-top:6px;}
 .stat .v.live{color:#22c55e;}
 
-.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;margin-top:8px;}
+/* ========= SECTION HEAD ========= */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;margin-top:8px;gap:10px;flex-wrap:wrap;}
 .section-head h2{font-size:16px;font-weight:800;letter-spacing:-0.3px;}
+.section-head .right{display:flex;gap:10px;align-items:center;}
 .section-head .count{font-size:12px;color:rgba(255,255,255,0.4);font-weight:600;}
 
-.btn{padding:11px 20px;border-radius:100px;font-size:13px;font-weight:800;letter-spacing:0.3px;border:none;cursor:pointer;font-family:inherit;}
+/* ========= BUTTONS ========= */
+.btn{padding:11px 20px;border-radius:100px;font-size:13px;font-weight:800;letter-spacing:0.3px;border:none;cursor:pointer;font-family:inherit;transition:transform 0.15s;}
+.btn:active{transform:scale(0.97);}
 .btn-primary{background:linear-gradient(135deg,#ff2d78,#8b5cf6);color:#fff;box-shadow:0 6px 20px rgba(255,45,120,0.35);}
 .btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;}
 .btn-danger{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
 .btn-success{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 6px 20px rgba(34,197,94,0.3);}
+.btn-sm{padding:7px 12px;font-size:11px;}
 
-.member{
+/* ========= CARDS ========= */
+.card{
   display:flex;gap:14px;padding:14px;
   background:rgba(255,255,255,0.03);
   border:1px solid rgba(255,255,255,0.07);
   border-radius:20px;margin-bottom:12px;
 }
-.member.live{border-color:rgba(34,197,94,0.5);box-shadow:0 0 30px rgba(34,197,94,0.15);}
-.member-img{width:72px;height:72px;border-radius:16px;object-fit:cover;background:#1a0a2e;flex:0 0 72px;}
-.member-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
-.member-name{font-size:16px;font-weight:800;letter-spacing:-0.3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.live-dot{
-  display:inline-flex;align-items:center;gap:4px;
-  background:linear-gradient(135deg,#22c55e,#16a34a);
-  font-size:9px;font-weight:900;letter-spacing:0.5px;
-  padding:2px 7px;border-radius:100px;
-}
-.live-dot::before{content:"";width:5px;height:5px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
-.member-meta{font-size:12px;color:rgba(255,255,255,0.5);font-weight:500;}
-.member-pitch{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px;line-height:1.4;}
-.member-actions{display:flex;flex-direction:column;gap:6px;flex:0 0 auto;justify-content:center;}
-.member-actions .btn{padding:8px 14px;font-size:11px;}
+.card.live{border-color:rgba(34,197,94,0.5);box-shadow:0 0 30px rgba(34,197,94,0.15);}
+.card.room-active{border-color:rgba(139,92,246,0.4);box-shadow:0 0 24px rgba(139,92,246,0.12);}
+.card-img{width:72px;height:72px;border-radius:16px;object-fit:cover;background:#1a0a2e;flex:0 0 72px;}
+.card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.card-title{font-size:16px;font-weight:800;letter-spacing:-0.3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.card-meta{font-size:12px;color:rgba(255,255,255,0.5);font-weight:500;}
+.card-pitch{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px;line-height:1.4;}
+.card-actions{display:flex;flex-direction:column;gap:6px;flex:0 0 auto;justify-content:center;}
+.card-actions .btn{padding:8px 14px;font-size:11px;}
 
+.pill{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:9px;font-weight:900;letter-spacing:0.5px;
+  padding:3px 8px;border-radius:100px;
+}
+.pill-live{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;}
+.pill-live::before{content:"";width:5px;height:5px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite;}
+.pill-active{background:rgba(139,92,246,0.2);color:#a78bfa;}
+.pill-ended{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);}
+.pill-code{
+  background:rgba(255,255,255,0.08);color:#fff;
+  font-family:'SF Mono',monospace;font-weight:700;font-size:10px;
+  letter-spacing:0.5px;padding:3px 8px;
+}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* ========= EMPTY ========= */
 .empty{text-align:center;padding:48px 20px;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.1);border-radius:20px;}
 .empty-icon{font-size:42px;margin-bottom:12px;}
 .empty-title{font-size:16px;font-weight:800;margin-bottom:6px;}
 .empty-sub{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:18px;}
 
+/* ========= MODAL ========= */
 .modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
 .modal.on{display:flex;}
 .sheet{
@@ -105,17 +139,30 @@ body{padding-bottom:40px;}
 .sheet-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
-.field label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);}
-.field input,.field textarea{
+.field label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);display:flex;justify-content:space-between;align-items:center;}
+.field .hint{font-size:10px;font-weight:500;letter-spacing:0;text-transform:none;color:rgba(255,255,255,0.35);}
+.field input,.field textarea,.field select{
   width:100%;padding:13px 15px;border-radius:14px;
   background:rgba(255,255,255,0.05);
   border:1px solid rgba(255,255,255,0.1);
   color:#fff;font-family:inherit;font-size:14px;
-  outline:none;
+  outline:none;transition:border-color 0.2s;
 }
-.field input:focus,.field textarea:focus{border-color:#ff2d78;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:#ff2d78;}
 .field textarea{min-height:110px;resize:vertical;font-family:'SF Mono',monospace;font-size:13px;line-height:1.6;}
+.field select{cursor:pointer;}
+.field select option{background:#12121a;color:#fff;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.inline{display:flex;gap:8px;align-items:stretch;}
+.inline input{flex:1;}
+.gen-btn{
+  flex:0 0 auto;padding:0 14px;
+  border-radius:14px;border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.06);color:#fff;
+  font-size:11px;font-weight:800;cursor:pointer;
+  letter-spacing:0.3px;font-family:inherit;
+}
+.gen-btn:hover{background:rgba(255,45,120,0.15);border-color:rgba(255,45,120,0.4);}
 
 .file-drop{border:2px dashed rgba(255,255,255,0.15);border-radius:16px;padding:20px;text-align:center;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.55);}
 .file-drop:hover{border-color:#ff2d78;}
@@ -126,7 +173,26 @@ body{padding-bottom:40px;}
 .sheet-actions{display:flex;gap:10px;margin-top:20px;}
 .sheet-actions .btn{flex:1;padding:14px;}
 
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a24;border:1px solid rgba(255,255,255,0.1);padding:12px 20px;border-radius:100px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:all 0.3s;}
+/* ========= LINK RESULT ========= */
+.link-box{
+  display:none;
+  background:rgba(34,197,94,0.08);
+  border:1px solid rgba(34,197,94,0.3);
+  border-radius:16px;padding:16px;margin-top:16px;
+}
+.link-box.on{display:block;}
+.link-label{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#4ade80;margin-bottom:8px;}
+.link-url{
+  font-family:'SF Mono',monospace;font-size:12px;
+  color:#fff;word-break:break-all;
+  background:rgba(0,0,0,0.3);padding:10px 12px;border-radius:10px;
+  margin-bottom:10px;line-height:1.5;
+}
+.link-note{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.5;}
+.link-note b{color:#ff2d78;}
+
+/* ========= TOAST ========= */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a24;border:1px solid rgba(255,255,255,0.1);padding:12px 20px;border-radius:100px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:all 0.3s;max-width:90vw;text-align:center;}
 .toast.on{transform:translateX(-50%) translateY(0);opacity:1;}
 .toast.err{border-color:rgba(239,68,68,0.4);color:#f87171;}
 .toast.ok{border-color:rgba(34,197,94,0.4);color:#4ade80;}
@@ -136,39 +202,127 @@ body{padding-bottom:40px;}
 </head>
 <body>
 
+<!-- ========= TOP BAR ========= -->
 <div class="topbar">
   <div class="brand">Live<span>Link</span><span class="brand-badge">ADMIN</span></div>
   <div class="topbar-right">
-    <button class="icon-btn" id="previewBtn" title="Preview live">👁</button>
     <button class="logout-btn" id="logoutBtn">Log out</button>
   </div>
 </div>
 
-<div class="wrap">
-  <div class="stats">
-    <div class="stat"><div class="k">Members</div><div class="v" id="statMembers">0</div></div>
-    <div class="stat"><div class="k">Live Now</div><div class="v live" id="statLive">—</div></div>
-    <div class="stat"><div class="k">Admin</div><div class="v" style="font-size:14px;padding-top:6px;" id="statAdmin">—</div></div>
-  </div>
+<!-- ========= TABS ========= -->
+<div class="tabs">
+  <button class="tab on" id="tabRooms">Rooms</button>
+  <button class="tab" id="tabMembers">Members</button>
+</div>
 
-  <div class="section-head">
-    <h2>Members</h2>
-    <div style="display:flex;gap:10px;align-items:center;">
-      <span class="count" id="memberCount">0 total</span>
-      <button class="btn btn-primary" id="addBtn">+ Add member</button>
+<div class="wrap">
+
+  <!-- ========= ROOMS VIEW ========= -->
+  <div class="view on" id="viewRooms">
+    <div class="stats">
+      <div class="stat"><div class="k">Total rooms</div><div class="v" id="statRooms">0</div></div>
+      <div class="stat"><div class="k">Active</div><div class="v live" id="statActiveRooms">0</div></div>
+      <div class="stat"><div class="k">Guests in rooms</div><div class="v" id="statGuests">0</div></div>
+    </div>
+
+    <div class="section-head">
+      <h2>Rooms</h2>
+      <div class="right">
+        <span class="count" id="roomsCount">0 total</span>
+        <button class="btn btn-primary" id="genInviteBtn">+ Generate invite</button>
+      </div>
+    </div>
+
+    <div id="roomsList">
+      <div class="loading">Loading rooms...</div>
     </div>
   </div>
 
-  <div id="memberList">
-    <div class="loading">Loading members...</div>
+  <!-- ========= MEMBERS VIEW ========= -->
+  <div class="view" id="viewMembers">
+    <div class="section-head">
+      <h2>Members</h2>
+      <div class="right">
+        <span class="count" id="memberCount">0 total</span>
+        <button class="btn btn-primary" id="addMemberBtn">+ Add member</button>
+      </div>
+    </div>
+
+    <div id="membersList">
+      <div class="loading">Loading members...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========= GENERATE INVITE MODAL ========= -->
+<div class="modal" id="inviteModal">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h3>Generate invite link</h3>
+      <button class="sheet-close" id="inviteModalClose">✕</button>
+    </div>
+
+    <div class="field">
+      <label>Room code <span class="hint">goes in the URL</span></label>
+      <div class="inline">
+        <input id="rCode" placeholder="e.g. ClassyDateZoom" maxlength="30">
+        <button class="gen-btn" id="genCode">Generate</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Passcode <span class="hint">user must type this to enter</span></label>
+      <div class="inline">
+        <input id="rPasscode" placeholder="e.g. A1234" maxlength="20">
+        <button class="gen-btn" id="genPasscode">Generate</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Host member</label>
+      <select id="rMember"></select>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Max users</label>
+        <input id="rMaxUsers" type="number" min="1" max="100" value="20">
+      </div>
+      <div class="field">
+        <label>Expires in (hours)</label>
+        <input id="rExpires" type="number" min="1" max="720" value="24">
+      </div>
+    </div>
+
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" id="inviteCancelBtn">Cancel</button>
+      <button class="btn btn-primary" id="inviteCreateBtn">Create room</button>
+    </div>
+
+    <div class="link-box" id="linkBox">
+      <div class="link-label">✓ Room created — copy this link</div>
+      <div class="link-url" id="linkUrl"></div>
+      <div class="link-note">
+        Room code: <b id="linkCode"></b><br>
+        Passcode: <b id="linkPasscode"></b> — send this to the user separately.<br>
+        Anyone with the link must enter the passcode to join.
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn btn-primary" id="copyLinkBtn" style="flex:1;">Copy link</button>
+        <button class="btn btn-ghost" id="copyAllBtn" style="flex:1;">Copy link + passcode</button>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- ========= MEMBER MODAL ========= -->
 <div class="modal" id="memberModal">
   <div class="sheet">
     <div class="sheet-head">
       <h3 id="modalTitle">Add member</h3>
-      <button class="sheet-close" id="modalClose">✕</button>
+      <button class="sheet-close" id="memberModalClose">✕</button>
     </div>
 
     <input type="hidden" id="editId">
@@ -196,8 +350,8 @@ body{padding-bottom:40px;}
     </div>
 
     <div class="sheet-actions">
-      <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
-      <button class="btn btn-primary" id="saveBtn">Save member</button>
+      <button class="btn btn-ghost" id="memberCancelBtn">Cancel</button>
+      <button class="btn btn-primary" id="saveMemberBtn">Save member</button>
     </div>
   </div>
 </div>
@@ -206,17 +360,29 @@ body{padding-bottom:40px;}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* =========================================================
+   CONFIG
+   ========================================================= */
 const SUPABASE_URL  = 'https://isoautwpyzaquawyzbbv.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzb2F1dHdweXphcXVhd3l6YmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NjYyMzUsImV4cCI6MjEwNTA0MjIzNX0.GpdO1B6aR_oOfwmnDbs3kBLvUVkRsZhJMGhcIXJx7RQ';
 
-/* Use `sb` — never `supabase` — to avoid clashing with the library's global */
+const APP_BASE_URL = 'https://livelinkzoom.onrender.com';
+
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 const $ = id => document.getElementById(id);
 
+/* =========================================================
+   STATE
+   ========================================================= */
 let currentUser = null;
 let members = [];
+let rooms = [];
 let photoDataURL = null;
+let lastCreatedRoom = null;
 
+/* =========================================================
+   TOAST
+   ========================================================= */
 let toastTimer = null;
 function toast(msg, type='ok'){
   const t = $('toast');
@@ -224,6 +390,12 @@ function toast(msg, type='ok'){
   t.className = 'toast on ' + type;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('on'), 2800);
+}
+
+function escapeHtml(str){
+  return String(str || '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
 }
 
 /* =========================================================
@@ -234,10 +406,8 @@ function toast(msg, type='ok'){
   if(!session){ window.location.href = 'admin-login.html'; return; }
 
   const { data: profile, error: pErr } = await sb
-    .from('profiles')
-    .select('role, full_name')
-    .eq('id', session.user.id)
-    .maybeSingle();
+    .from('profiles').select('role, full_name')
+    .eq('id', session.user.id).maybeSingle();
 
   if(pErr || !profile || profile.role !== 'admin'){
     await sb.auth.signOut();
@@ -246,91 +416,311 @@ function toast(msg, type='ok'){
   }
 
   currentUser = session.user;
-  $('statAdmin').textContent = profile.full_name || session.user.email;
-  await loadMembers();
+  await Promise.all([loadMembers(), loadRooms()]);
 })();
+
+/* =========================================================
+   TABS
+   ========================================================= */
+$('tabRooms').addEventListener('click', () => switchTab('rooms'));
+$('tabMembers').addEventListener('click', () => switchTab('members'));
+function switchTab(name){
+  $('tabRooms').classList.toggle('on', name === 'rooms');
+  $('tabMembers').classList.toggle('on', name === 'members');
+  $('viewRooms').classList.toggle('on', name === 'rooms');
+  $('viewMembers').classList.toggle('on', name === 'members');
+}
 
 /* =========================================================
    LOAD MEMBERS
    ========================================================= */
 async function loadMembers(){
-  $('memberList').innerHTML = '<div class="loading">Loading members...</div>';
-
-  const { data, error } = await sb
-    .from('members')
-    .select('*')
-    .order('created_at', { ascending: false });
-
+  $('membersList').innerHTML = '<div class="loading">Loading members...</div>';
+  const { data, error } = await sb.from('members').select('*').order('created_at', { ascending: false });
   if(error){
-    console.error('loadMembers error:', error);
-    $('memberList').innerHTML = `<div class="empty">
-      <div class="empty-icon">⚠️</div>
-      <div class="empty-title">Could not load members</div>
-      <div class="empty-sub">${escapeHtml(error.message)}</div>
-    </div>`;
+    $('membersList').innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Error</div><div class="empty-sub">${escapeHtml(error.message)}</div></div>`;
     return;
   }
-
   members = data || [];
+  $('memberCount').textContent = members.length + ' total';
   renderMembers();
+  populateMemberSelect();
 }
 
-/* =========================================================
-   RENDER
-   ========================================================= */
 function renderMembers(){
-  $('statMembers').textContent = members.length;
-  $('memberCount').textContent = members.length + ' total';
-
-  const live = members.find(m => m.is_live);
-  $('statLive').textContent = live ? live.name : '—';
-
   if(members.length === 0){
-    $('memberList').innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">🎬</div>
-        <div class="empty-title">No members yet</div>
-        <div class="empty-sub">Add your first host — photo, name, and a script.</div>
-        <button class="btn btn-primary" onclick="document.getElementById('addBtn').click()">+ Add your first member</button>
-      </div>`;
+    $('membersList').innerHTML = `<div class="empty"><div class="empty-icon">🎬</div><div class="empty-title">No members yet</div><div class="empty-sub">Add your first host — photo, name, and a script.</div><button class="btn btn-primary" onclick="document.getElementById('addMemberBtn').click()">+ Add your first member</button></div>`;
     return;
   }
-
-  $('memberList').innerHTML = members.map(m => {
+  $('membersList').innerHTML = members.map(m => {
     const ageLoc = [m.age, m.location].filter(Boolean).join(' • ') || '—';
     const img = m.photo_url || 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72"><rect width="100%" height="100%" fill="#2a1a3e"/><text x="50%" y="60%" font-size="24" fill="#666" text-anchor="middle" font-family="sans-serif">📸</text></svg>');
     return `
-      <div class="member ${m.is_live?'live':''}" data-id="${m.id}">
-        <img class="member-img" src="${img}" alt="">
-        <div class="member-body">
-          <div class="member-name">
-            ${escapeHtml(m.name || 'Unnamed')}
-            ${m.is_live ? '<span class="live-dot">LIVE</span>' : ''}
-          </div>
-          <div class="member-meta">${escapeHtml(ageLoc)}</div>
-          ${m.pitch ? `<div class="member-pitch">"${escapeHtml(m.pitch)}"</div>` : ''}
+      <div class="card">
+        <img class="card-img" src="${img}" alt="">
+        <div class="card-body">
+          <div class="card-title">${escapeHtml(m.name || 'Unnamed')}</div>
+          <div class="card-meta">${escapeHtml(ageLoc)}</div>
+          ${m.pitch ? `<div class="card-pitch">"${escapeHtml(m.pitch)}"</div>` : ''}
         </div>
-        <div class="member-actions">
-          ${m.is_live
-            ? `<button class="btn btn-ghost" onclick="setLive('${m.id}', false)">Stop live</button>`
-            : `<button class="btn btn-success" onclick="setLive('${m.id}', true)">Go live</button>`}
-          <button class="btn btn-ghost" onclick="editMember('${m.id}')">Edit</button>
-          <button class="btn btn-danger" onclick="deleteMember('${m.id}')">Delete</button>
+        <div class="card-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editMember('${m.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteMember('${m.id}')">Delete</button>
         </div>
       </div>`;
   }).join('');
 }
 
-function escapeHtml(str){
-  return String(str || '').replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
+function populateMemberSelect(){
+  const sel = $('rMember');
+  sel.innerHTML = '';
+  if(members.length === 0){
+    const o = document.createElement('option');
+    o.value = ''; o.textContent = '— No members yet, add one first —';
+    sel.appendChild(o);
+    return;
+  }
+  members.forEach(m => {
+    const o = document.createElement('option');
+    o.value = m.id;
+    o.textContent = `${m.name}${m.age ? ' • '+m.age : ''}${m.location ? ' • '+m.location : ''}`;
+    sel.appendChild(o);
+  });
 }
 
 /* =========================================================
-   MODAL
+   LOAD ROOMS
    ========================================================= */
-function openModal(mode, member){
+async function loadRooms(){
+  $('roomsList').innerHTML = '<div class="loading">Loading rooms...</div>';
+  const { data, error } = await sb
+    .from('rooms')
+    .select('*, members(name, photo_url)')
+    .order('created_at', { ascending: false });
+  if(error){
+    $('roomsList').innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Error</div><div class="empty-sub">${escapeHtml(error.message)}</div></div>`;
+    return;
+  }
+  rooms = data || [];
+
+  // Get guest counts per room
+  let guestCounts = {};
+  if(rooms.length){
+    const ids = rooms.map(r => r.id);
+    const { data: gData } = await sb
+      .from('guests').select('room_id')
+      .in('room_id', ids);
+    (gData || []).forEach(g => {
+      guestCounts[g.room_id] = (guestCounts[g.room_id] || 0) + 1;
+    });
+  }
+
+  const activeCount = rooms.filter(r => r.is_active).length;
+  const totalGuests = Object.values(guestCounts).reduce((a,b)=>a+b,0);
+  $('statRooms').textContent = rooms.length;
+  $('statActiveRooms').textContent = activeCount;
+  $('statGuests').textContent = totalGuests;
+  $('roomsCount').textContent = rooms.length + ' total';
+
+  renderRooms(guestCounts);
+}
+
+function renderRooms(guestCounts){
+  if(rooms.length === 0){
+    $('roomsList').innerHTML = `<div class="empty"><div class="empty-icon">🔗</div><div class="empty-title">No rooms yet</div><div class="empty-sub">Generate your first invite link. Pick a member, choose a room code, set a passcode, share the link.</div><button class="btn btn-primary" onclick="document.getElementById('genInviteBtn').click()">+ Generate invite</button></div>`;
+    return;
+  }
+
+  $('roomsList').innerHTML = rooms.map(r => {
+    const img = r.members?.photo_url || 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72"><rect width="100%" height="100%" fill="#2a1a3e"/><text x="50%" y="60%" font-size="24" fill="#666" text-anchor="middle" font-family="sans-serif">🎬</text></svg>');
+    const code = r.code;
+    const inviteUrl = `${APP_BASE_URL}/live-session.html?room=${encodeURIComponent(code)}`;
+    const guestCount = guestCounts[r.id] || 0;
+    const statusPill = r.is_active
+      ? '<span class="pill pill-active">ACTIVE</span>'
+      : '<span class="pill pill-ended">ENDED</span>';
+
+    return `
+      <div class="card ${r.is_active?'room-active':''}">
+        <img class="card-img" src="${img}" alt="">
+        <div class="card-body">
+          <div class="card-title">
+            ${escapeHtml(code)}
+            ${statusPill}
+          </div>
+          <div class="card-meta">
+            Host: ${escapeHtml(r.members?.name || '—')} • ${guestCount} guest${guestCount===1?'':'s'}
+          </div>
+          <div class="card-pitch">
+            Passcode: <b style="color:#ff2d78;font-family:'SF Mono',monospace;letter-spacing:0.5px;">${escapeHtml(r.passcode)}</b>
+          </div>
+          <div class="card-pitch" style="font-size:11px;color:rgba(255,255,255,0.45);font-family:'SF Mono',monospace;">
+            ${escapeHtml(inviteUrl)}
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-primary btn-sm" onclick="joinRoom('${r.id}')">Join room</button>
+          <button class="btn btn-ghost btn-sm" onclick="copyRoomLink('${code}')">Copy link</button>
+          ${r.is_active
+            ? `<button class="btn btn-danger btn-sm" onclick="endRoom('${r.id}')">End room</button>`
+            : `<button class="btn btn-ghost btn-sm" onclick="deleteRoom('${r.id}')">Delete</button>`}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* =========================================================
+   INVITE MODAL
+   ========================================================= */
+function openInviteModal(){
+  $('inviteModal').classList.add('on');
+  $('rCode').value = '';
+  $('rPasscode').value = '';
+  $('rMaxUsers').value = '20';
+  $('rExpires').value = '24';
+  $('linkBox').classList.remove('on');
+  lastCreatedRoom = null;
+  populateMemberSelect();
+}
+function closeInviteModal(){
+  $('inviteModal').classList.remove('on');
+  $('linkBox').classList.remove('on');
+}
+
+$('genInviteBtn').addEventListener('click', openInviteModal);
+$('inviteModalClose').addEventListener('click', closeInviteModal);
+$('inviteCancelBtn').addEventListener('click', closeInviteModal);
+$('inviteModal').addEventListener('click', e => {
+  if(e.target === $('inviteModal')) closeInviteModal();
+});
+
+/* =========================================================
+   GENERATORS
+   ========================================================= */
+function randomCode(len=8){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let out = '';
+  for(let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
+  return out;
+}
+$('genCode').addEventListener('click', () => {
+  $('rCode').value = 'Room' + randomCode(6);
+});
+$('genPasscode').addEventListener('click', () => {
+  $('rPasscode').value = randomCode(5);
+});
+
+/* =========================================================
+   CREATE ROOM
+   ========================================================= */
+$('inviteCreateBtn').addEventListener('click', async () => {
+  const code = $('rCode').value.trim();
+  const passcode = $('rPasscode').value.trim();
+  const memberId = $('rMember').value;
+  const maxUsers = parseInt($('rMaxUsers').value, 10) || 20;
+  const hours = parseInt($('rExpires').value, 10) || 24;
+
+  if(!code){ toast('Room code is required', 'err'); return; }
+  if(!passcode){ toast('Passcode is required', 'err'); return; }
+  if(!memberId){ toast('Pick a host member', 'err'); return; }
+  if(!/^[A-Za-z0-9_-]+$/.test(code)){ toast('Room code: letters, numbers, - and _ only', 'err'); return; }
+
+  const expiresAt = new Date(Date.now() + hours * 3600 * 1000).toISOString();
+
+  const btn = $('inviteCreateBtn');
+  btn.disabled = true; btn.textContent = 'Creating...';
+
+  const { data, error } = await sb.from('rooms').insert({
+    code,
+    passcode,
+    member_id: memberId,
+    created_by: currentUser.id,
+    is_active: true,
+    max_users: maxUsers,
+    script_index: 0,
+    expires_at: expiresAt
+  }).select().single();
+
+  btn.disabled = false; btn.textContent = 'Create room';
+
+  if(error){
+    if(error.message.includes('duplicate')) toast('That room code is already used', 'err');
+    else toast(error.message, 'err');
+    return;
+  }
+
+  lastCreatedRoom = data;
+  const url = `${APP_BASE_URL}/live-session.html?room=${encodeURIComponent(code)}`;
+  $('linkUrl').textContent = url;
+  $('linkCode').textContent = code;
+  $('linkPasscode').textContent = passcode;
+  $('linkBox').classList.add('on');
+  toast('Room created', 'ok');
+
+  await loadRooms();
+});
+
+/* =========================================================
+   COPY HELPERS
+   ========================================================= */
+function copyText(text, label){
+  navigator.clipboard.writeText(text).then(
+    () => toast(label + ' copied', 'ok'),
+    () => toast('Copy failed — select manually', 'err')
+  );
+}
+
+$('copyLinkBtn').addEventListener('click', () => {
+  if(!lastCreatedRoom) return;
+  const url = `${APP_BASE_URL}/live-session.html?room=${encodeURIComponent(lastCreatedRoom.code)}`;
+  copyText(url, 'Link');
+});
+
+$('copyAllBtn').addEventListener('click', () => {
+  if(!lastCreatedRoom) return;
+  const url = `${APP_BASE_URL}/live-session.html?room=${encodeURIComponent(lastCreatedRoom.code)}`;
+  const msg = `You're invited to ${lastCreatedRoom.code}\n\nLink: ${url}\nPasscode: ${lastCreatedRoom.passcode}`;
+  copyText(msg, 'Link + passcode');
+});
+
+window.copyRoomLink = function(code){
+  const r = rooms.find(x => x.code === code);
+  if(!r) return;
+  const url = `${APP_BASE_URL}/live-session.html?room=${encodeURIComponent(code)}`;
+  const msg = `You're invited to ${code}\n\nLink: ${url}\nPasscode: ${r.passcode}`;
+  copyText(msg, 'Link + passcode');
+};
+
+/* =========================================================
+   JOIN / END / DELETE ROOM
+   ========================================================= */
+window.joinRoom = function(id){
+  const r = rooms.find(x => x.id === id);
+  if(!r) return;
+  const url = `live-session.html?room=${encodeURIComponent(r.code)}&admin=1`;
+  window.open(url, '_blank');
+};
+
+window.endRoom = async function(id){
+  if(!confirm('End this room? Everyone will be kicked out.')) return;
+  const { error } = await sb.from('rooms').update({ is_active: false }).eq('id', id);
+  if(error){ toast(error.message, 'err'); return; }
+  toast('Room ended', 'ok');
+  await loadRooms();
+};
+
+window.deleteRoom = async function(id){
+  if(!confirm('Delete this room permanently?')) return;
+  const { error } = await sb.from('rooms').delete().eq('id', id);
+  if(error){ toast(error.message, 'err'); return; }
+  toast('Room deleted', 'ok');
+  await loadRooms();
+};
+
+/* =========================================================
+   MEMBER MODAL
+   ========================================================= */
+function openMemberModal(mode, member){
   $('memberModal').classList.add('on');
   $('modalTitle').textContent = mode === 'edit' ? 'Edit member' : 'Add member';
   $('editId').value = member?.id || '';
@@ -340,13 +730,11 @@ function openModal(mode, member){
   $('mPitch').value    = member?.pitch || '';
   $('mScript').value   = member?.script || '';
   photoDataURL = member?.photo_url || null;
-
   const p = $('photoPreview');
   if(photoDataURL){ p.src = photoDataURL; p.classList.add('on'); }
   else { p.classList.remove('on'); p.removeAttribute('src'); }
 }
-
-function closeModal(){
+function closeMemberModal(){
   $('memberModal').classList.remove('on');
   $('editId').value = '';
   photoDataURL = null;
@@ -354,34 +742,25 @@ function closeModal(){
   $('photoPreview').classList.remove('on');
   $('photoInput').value = '';
 }
-
-$('addBtn').addEventListener('click', () => openModal('add'));
-$('modalClose').addEventListener('click', closeModal);
-$('cancelBtn').addEventListener('click', closeModal);
+$('addMemberBtn').addEventListener('click', () => openMemberModal('add'));
+$('memberModalClose').addEventListener('click', closeMemberModal);
+$('memberCancelBtn').addEventListener('click', closeMemberModal);
 $('memberModal').addEventListener('click', e => {
-  if(e.target === $('memberModal')) closeModal();
+  if(e.target === $('memberModal')) closeMemberModal();
 });
 
-/* =========================================================
-   PHOTO
-   ========================================================= */
 $('photoInput').addEventListener('change', e => {
   const f = e.target.files[0]; if(!f) return;
   if(f.size > 4 * 1024 * 1024){ toast('Image must be under 4MB', 'err'); return; }
   const r = new FileReader();
   r.onload = ev => {
     photoDataURL = ev.target.result;
-    const p = $('photoPreview');
-    p.src = photoDataURL;
-    p.classList.add('on');
+    const p = $('photoPreview'); p.src = photoDataURL; p.classList.add('on');
   };
   r.readAsDataURL(f);
 });
 
-/* =========================================================
-   SAVE
-   ========================================================= */
-$('saveBtn').addEventListener('click', async () => {
+$('saveMemberBtn').addEventListener('click', async () => {
   const name = $('mName').value.trim();
   if(!name){ toast('Name is required', 'err'); return; }
 
@@ -389,8 +768,7 @@ $('saveBtn').addEventListener('click', async () => {
   const editId = $('editId').value;
 
   const payload = {
-    name,
-    age,
+    name, age,
     location: $('mLocation').value.trim() || null,
     pitch: $('mPitch').value.trim() || null,
     script: $('mScript').value.trim() || null,
@@ -398,7 +776,7 @@ $('saveBtn').addEventListener('click', async () => {
     created_by: currentUser.id
   };
 
-  const btn = $('saveBtn');
+  const btn = $('saveMemberBtn');
   btn.disabled = true; btn.textContent = 'Saving...';
 
   let error;
@@ -411,25 +789,17 @@ $('saveBtn').addEventListener('click', async () => {
   }
 
   btn.disabled = false; btn.textContent = 'Save member';
-
-  if(error){
-    console.error('save error:', error);
-    toast(error.message, 'err');
-    return;
-  }
+  if(error){ toast(error.message, 'err'); return; }
   toast(editId ? 'Member updated' : 'Member added', 'ok');
-  closeModal();
+  closeMemberModal();
   await loadMembers();
+  await loadRooms();
 });
 
-/* =========================================================
-   EDIT / DELETE / SET LIVE
-   ========================================================= */
 window.editMember = function(id){
   const m = members.find(x => x.id === id);
-  if(m) openModal('edit', m);
+  if(m) openMemberModal('edit', m);
 };
-
 window.deleteMember = async function(id){
   const m = members.find(x => x.id === id);
   if(!m) return;
@@ -440,24 +810,9 @@ window.deleteMember = async function(id){
   await loadMembers();
 };
 
-window.setLive = async function(id, live){
-  if(live){
-    const { error: e1 } = await sb.from('members').update({ is_live: false }).neq('id', id);
-    if(e1){ toast(e1.message, 'err'); return; }
-  }
-  const { error } = await sb.from('members').update({ is_live: live }).eq('id', id);
-  if(error){ toast(error.message, 'err'); return; }
-  toast(live ? 'Host is now LIVE' : 'Host stopped', 'ok');
-  await loadMembers();
-};
-
 /* =========================================================
-   PREVIEW / LOGOUT
+   LOGOUT
    ========================================================= */
-$('previewBtn').addEventListener('click', () => {
-  window.open('live-session.html', '_blank');
-});
-
 $('logoutBtn').addEventListener('click', async () => {
   await sb.auth.signOut();
   window.location.href = 'admin-login.html';
